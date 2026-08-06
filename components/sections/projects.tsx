@@ -1,9 +1,12 @@
-import { siteConfig } from "@/lib/site-config";
+import { getProjects } from "@/lib/projects";
+import { getTechStack } from "@/lib/tech-stack";
 import { ProjectCard } from "@/components/sections/project-card";
 import { SectionHeader } from "@/components/ui/section-header";
 
-export function Projects() {
-  const featured = siteConfig.projects.filter((project) => project.featured);
+export async function Projects() {
+  const [projects, techStack] = await Promise.all([getProjects(), getTechStack()]);
+  const techById = new Map(techStack.map((tech) => [tech.id, tech]));
+  const featured = projects.filter((project) => project.featured);
 
   return (
     <section id="projects">
@@ -14,7 +17,11 @@ export function Projects() {
       />
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {featured.map((project) => (
-          <ProjectCard key={project.title} project={project} />
+          <ProjectCard
+            key={project.id}
+            project={project}
+            techStack={project.techStackIds.map((id) => techById.get(id)).filter(Boolean) as typeof techStack}
+          />
         ))}
       </div>
     </section>

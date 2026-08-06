@@ -4,7 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Container } from "@/components/ui/container";
 import { ProjectCard } from "@/components/sections/project-card";
-import { siteConfig } from "@/lib/site-config";
+import { getProjects } from "@/lib/projects";
+import { getTechStack } from "@/lib/tech-stack";
 import { profile } from "@/lib/profile";
 
 export const metadata: Metadata = {
@@ -12,7 +13,12 @@ export const metadata: Metadata = {
   description: `All projects by ${profile.name}.`,
 };
 
-export default function ProjectsPage() {
+export const revalidate = 60;
+
+export default async function ProjectsPage() {
+  const [projects, techStack] = await Promise.all([getProjects(), getTechStack()]);
+  const techById = new Map(techStack.map((tech) => [tech.id, tech]));
+
   return (
     <main className="flex-1 py-20">
       <Container>
@@ -27,8 +33,12 @@ export default function ProjectsPage() {
           All projects
         </h1>
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {siteConfig.projects.map((project) => (
-            <ProjectCard key={project.title} project={project} />
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              techStack={project.techStackIds.map((id) => techById.get(id)).filter(Boolean) as typeof techStack}
+            />
           ))}
         </div>
       </Container>

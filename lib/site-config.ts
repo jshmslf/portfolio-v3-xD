@@ -33,58 +33,7 @@ export const siteConfig = {
     { name: "Git", icon: "git" },
     { name: "Figma", icon: "figma" },
   ],
-  projects: [
-    {
-      title: "Project One",
-      description:
-        "A short description of a project you shipped, the problem it solved, and the impact it had.",
-      tags: ["Next.js", "TypeScript", "PostgreSQL"],
-      href: "https://example.com",
-      featured: true,
-    },
-    {
-      title: "Project Two",
-      description:
-        "Another placeholder project. Swap this for something you're proud of, with a link to the live site or repo.",
-      tags: ["React", "Node.js"],
-      href: "https://example.com",
-      featured: true,
-    },
-    {
-      title: "Project Three",
-      description:
-        "A third example project slot. Three to six projects is usually a good number for a portfolio.",
-      tags: ["Tailwind CSS", "Figma"],
-      href: "https://example.com",
-      featured: true,
-    },
-    {
-      title: "Project Four",
-      description:
-        "A fourth placeholder project, only shown on the full projects page, not the homepage teaser.",
-      tags: ["Next.js", "Node.js"],
-      href: "https://example.com",
-      featured: false,
-    },
-    {
-      title: "Project Five",
-      description:
-        "A fifth placeholder project slot, swap for real work once you have it ready.",
-      tags: ["TypeScript", "PostgreSQL"],
-      href: "https://example.com",
-      featured: false,
-    },
-    {
-      title: "Project Six",
-      description:
-        "A sixth placeholder project slot rounding out the full projects page.",
-      tags: ["React", "Tailwind CSS"],
-      href: "https://example.com",
-      featured: false,
-    },
-  ],
 } as const;
 
 export type SiteConfig = typeof siteConfig;
-export type Project = (typeof siteConfig)["projects"][number];
 export type TechStackItem = (typeof siteConfig)["techStack"][number];

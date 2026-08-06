@@ -9,18 +9,19 @@ import { TechStack } from "@/components/sections/tech-stack";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Container } from "@/components/ui/container";
 import { getSocialLinks } from "@/lib/social-links";
+import { getProjects } from "@/lib/projects";
 
 export const revalidate = 60;
 
 export default async function Home() {
-  const socialLinks = await getSocialLinks();
+  const [socialLinks, projects] = await Promise.all([getSocialLinks(), getProjects()]);
 
   return (
     <main className="flex-1">
       <Hero />
       <Container className="pb-24">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[30%_1fr] lg:gap-16">
-          <Sidebar socialLinks={socialLinks} />
+          <Sidebar socialLinks={socialLinks} projectCount={projects.length} />
           <div className="flex flex-col gap-16">
             <About />
             <TechStack />

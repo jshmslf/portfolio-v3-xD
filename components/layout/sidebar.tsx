@@ -8,7 +8,6 @@ import {
   faBriefcase,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
-import { siteConfig } from "@/lib/site-config";
 import { profile } from "@/lib/profile";
 import { experience } from "@/lib/experience";
 import { getSocialIcon } from "@/lib/icons";
@@ -16,7 +15,13 @@ import { MapPlaceholder } from "@/components/layout/map-placeholder";
 import { HireMeModal } from "@/components/layout/hire-me-modal";
 import type { SocialLink } from "@/lib/social-links";
 
-export function Sidebar({ socialLinks = [] }: { socialLinks?: SocialLink[] }) {
+export function Sidebar({
+  socialLinks = [],
+  projectCount = 0,
+}: {
+  socialLinks?: SocialLink[];
+  projectCount?: number;
+}) {
   const currentRole = experience[0];
   const [hireMeOpen, setHireMeOpen] = useState(false);
 
@@ -40,7 +45,7 @@ export function Sidebar({ socialLinks = [] }: { socialLinks?: SocialLink[] }) {
           <div className="mt-4 flex items-center gap-3">
             <FontAwesomeIcon icon={faFolder} className="text-accent" />
             <p className="text-sm text-muted">
-              {siteConfig.projects.length} projects
+              {projectCount} projects
             </p>
           </div>
 
