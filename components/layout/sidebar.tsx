@@ -11,11 +11,12 @@ import {
 import { siteConfig } from "@/lib/site-config";
 import { profile } from "@/lib/profile";
 import { experience } from "@/lib/experience";
-import { socialIconMap } from "@/lib/icons";
+import { getSocialIcon } from "@/lib/icons";
 import { MapPlaceholder } from "@/components/layout/map-placeholder";
 import { HireMeModal } from "@/components/layout/hire-me-modal";
+import type { SocialLink } from "@/lib/social-links";
 
-export function Sidebar() {
+export function Sidebar({ socialLinks = [] }: { socialLinks?: SocialLink[] }) {
   const currentRole = experience[0];
   const [hireMeOpen, setHireMeOpen] = useState(false);
 
@@ -31,7 +32,7 @@ export function Sidebar() {
             <div>
               <p className="font-medium">{currentRole.role}</p>
               <p className="text-sm text-muted">
-                {currentRole.org} &middot; {siteConfig.yearsExperience}
+                {currentRole.org}
               </p>
             </div>
           </div>
@@ -54,23 +55,23 @@ export function Sidebar() {
           </div>
 
           <div className="mt-6 flex gap-4 border-t border-border pt-4">
-            {profile.social.map((link) => (
+            {socialLinks.map((link) => (
               <a
-                key={link.label}
+                key={link.id}
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={link.label}
                 className="text-muted transition-colors hover:text-accent"
               >
-                <FontAwesomeIcon icon={socialIconMap[link.icon]} size="lg" />
+                <FontAwesomeIcon icon={getSocialIcon(link.iconKey)} size="lg" />
               </a>
             ))}
           </div>
         </div>
 
         <div
-          className="border border-border bg-surface p-6"
+          className="border border-border bg-surface p-4"
           style={{ borderRadius: "var(--radius)" }}
         >
           <p className="text-xs font-medium uppercase tracking-wide text-muted">
@@ -78,9 +79,9 @@ export function Sidebar() {
           </p>
           <div className="mt-3 flex items-center gap-2">
             <FontAwesomeIcon icon={faLocationDot} className="text-accent" />
-            <p className="text-sm font-medium">{profile.address}</p>
+            <p className="text-xs font-medium">{profile.address}</p>
           </div>
-          <div className="mt-4">
+          <div className="mt-2">
             <MapPlaceholder />
           </div>
         </div>

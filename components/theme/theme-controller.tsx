@@ -16,6 +16,7 @@ import {
   type RadiusId,
   type ThemeMode,
 } from "@/lib/theme-config";
+import type { PortfolioVersion } from "@/lib/portfolio-versions";
 
 function applyTheme(theme: ThemeMode) {
   const root = document.documentElement;
@@ -50,7 +51,7 @@ function readStored<T extends string>(key: string, fallback: T): T {
   return (localStorage.getItem(key) as T) ?? fallback;
 }
 
-export function ThemeController() {
+export function ThemeController({ versions = [] }: { versions?: PortfolioVersion[] }) {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<ThemeMode>(() =>
     readStored(THEME_STORAGE_KEY, defaultTheme)
@@ -75,7 +76,7 @@ export function ThemeController() {
   }, [open]);
 
   return (
-    <div ref={panelRef} className="fixed bottom-5 right-5 z-50">
+    <div ref={panelRef} className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
       {open && (
         <div
           className="mb-3 w-64 border border-border bg-surface p-4 shadow-lg"
@@ -148,6 +149,28 @@ export function ThemeController() {
               />
             ))}
           </div>
+
+          {versions.length > 0 && (
+            <>
+              <p className="mt-4 text-xs font-medium uppercase tracking-wide text-muted">
+                Previous Versions
+              </p>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {versions.map((version) => (
+                  <a
+                    key={version.id}
+                    href={version.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-border px-2.5 py-1 text-xs text-foreground transition-colors hover:border-accent"
+                    style={{ borderRadius: "var(--radius)" }}
+                  >
+                    {version.label}
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 

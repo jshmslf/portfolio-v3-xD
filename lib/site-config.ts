@@ -83,29 +83,8 @@ export const siteConfig = {
       featured: false,
     },
   ],
-  blogPosts: [
-    {
-      title: "A placeholder post about something you learned",
-      date: "2026-01-12",
-      excerpt:
-        "A short excerpt summarizing the post. Replace this with real writing once you start publishing.",
-    },
-    {
-      title: "Notes on a project you shipped",
-      date: "2025-11-03",
-      excerpt:
-        "Another placeholder excerpt. Good blog posts here can double as case studies for your projects.",
-    },
-    {
-      title: "Something you think about often",
-      date: "2025-08-22",
-      excerpt:
-        "A third placeholder excerpt, swap for a real post title, date, and summary.",
-    },
-  ],
 } as const;
 
 export type SiteConfig = typeof siteConfig;
 export type Project = (typeof siteConfig)["projects"][number];
-export type BlogPost = (typeof siteConfig)["blogPosts"][number];
 export type TechStackItem = (typeof siteConfig)["techStack"][number];

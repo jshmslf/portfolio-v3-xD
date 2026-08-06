@@ -1,9 +1,10 @@
-import { siteConfig } from "@/lib/site-config";
+import { getPublishedBlogPosts } from "@/lib/blog";
 import { BlogCard } from "@/components/sections/blog-card";
 import { SectionHeader } from "@/components/ui/section-header";
 
-export function Blog() {
-  const teaser = siteConfig.blogPosts.slice(0, 3);
+export async function Blog() {
+  const posts = await getPublishedBlogPosts();
+  const teaser = posts.slice(0, 3);
 
   return (
     <section id="blog">
@@ -14,7 +15,7 @@ export function Blog() {
       />
       <div className="mt-6 grid gap-4">
         {teaser.map((post) => (
-          <BlogCard key={post.title} post={post} />
+          <BlogCard key={post.id} post={post} />
         ))}
       </div>
     </section>

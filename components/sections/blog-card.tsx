@@ -1,24 +1,32 @@
-import type { BlogPost } from "@/lib/site-config";
+import Link from "next/link";
+import type { BlogPost } from "@/lib/blog";
+import { excerptFromContent, computeReadingMinutes } from "@/lib/blog";
+import { profile } from "@/lib/profile";
 
 export function BlogCard({ post }: { post: BlogPost }) {
-  const date = new Date(post.date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const date = post.publishedAt
+    ? new Date(post.publishedAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
   return (
-    <div
-      className="border border-border p-5"
+    <Link
+      href={`/blog/${post.slug}`}
+      className="block border border-border p-5 transition-colors hover:border-accent"
       style={{ borderRadius: "var(--radius)" }}
     >
       <p className="text-xs font-medium uppercase tracking-wide text-muted">
-        {date}
+        {[date, `By ${profile.name}`, `${computeReadingMinutes(post.content)} min read`]
+          .filter(Boolean)
+          .join(" · ")}
       </p>
       <h3 className="mt-2 font-semibold">{post.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-foreground/80">
-        {post.excerpt}
+        {excerptFromContent(post.content)}
       </p>
-    </div>
+    </Link>
   );
 }

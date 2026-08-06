@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { profile } from "@/lib/profile";
-import { socialIconMap } from "@/lib/icons";
+import { getSocialIcon } from "@/lib/icons";
+import { getSocialLinks } from "@/lib/social-links";
 
-export function Contact() {
+export async function Contact() {
+  const socialLinks = await getSocialLinks();
+
   return (
     <section id="contact" className="pb-12">
       <h2 className="text-sm font-semibold uppercase tracking-wide text-accent">
@@ -21,16 +24,16 @@ export function Contact() {
         {profile.email}
       </a>
       <div className="mt-8 flex flex-wrap gap-5">
-        {profile.social.map((link) => (
+        {socialLinks.map((link) => (
           <a
-            key={link.label}
+            key={link.id}
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={link.label}
             className="text-muted transition-colors hover:text-accent"
           >
-            <FontAwesomeIcon icon={socialIconMap[link.icon]} size="lg" />
+            <FontAwesomeIcon icon={getSocialIcon(link.iconKey)} size="lg" />
           </a>
         ))}
       </div>

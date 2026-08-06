@@ -1,11 +1,10 @@
-import { siteConfig } from "@/lib/site-config";
+import { getTechStack } from "@/lib/tech-stack";
 import { SectionHeader } from "@/components/ui/section-header";
 import { TechItem } from "@/components/sections/tech-item";
 
-const HOMEPAGE_LIMIT = 6;
-
-export function TechStack() {
-  const featured = siteConfig.techStack.slice(0, HOMEPAGE_LIMIT);
+export async function TechStack() {
+  const items = await getTechStack();
+  const featured = items.filter((item) => item.featured);
 
   return (
     <section id="tech-stack">
@@ -16,7 +15,7 @@ export function TechStack() {
       />
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {featured.map((tech) => (
-          <TechItem key={tech.name} tech={tech} />
+          <TechItem key={tech.id} tech={tech} />
         ))}
       </div>
     </section>
