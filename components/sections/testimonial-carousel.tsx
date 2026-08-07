@@ -36,13 +36,13 @@ export function TestimonialCarousel({ testimonials }: { testimonials: Testimonia
     <div
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="flex flex-col items-center gap-4"
+      className="flex h-full flex-1 flex-col items-center gap-4"
     >
       <button
         key={current.id}
         type="button"
         onClick={() => setExpanded(current)}
-        className="w-full border border-border bg-surface p-4 text-center transition-colors hover:border-accent"
+        className="flex w-full flex-1 flex-col items-center justify-center border border-border bg-surface p-4 text-center transition-colors hover:border-accent"
         style={{ borderRadius: "var(--radius)" }}
       >
         <div className="flex justify-center gap-1">

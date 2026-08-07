@@ -1,7 +1,6 @@
 export const siteConfig = {
-  role: "Software Engineer",
-  tagline:
-    "I build reliable web and mobile solutions, and help students bring their own projects to life.",
+  role: "Software Engineer & Graphic Artist",
+  tagline: "I make ideas clickable.",
   location: "Remote",
   yearsExperience: "2+ years",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",

@@ -11,7 +11,7 @@ export async function Hero() {
   return (
     <section className="pt-24 pb-16 sm:pt-32 sm:pb-20">
       <Container>
-        <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+        <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:items-center sm:justify-center sm:text-left">
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -35,7 +35,7 @@ export async function Hero() {
               {profile.name}
             </h1>
             <p className="mt-3 text-lg text-muted sm:text-xl">{siteConfig.role}</p>
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-foreground/80">
+            <p className="mt-2 max-w-xl text-base leading-relaxed text-foreground/80">
               {siteConfig.tagline}
             </p>
           </div>

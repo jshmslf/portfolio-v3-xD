@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImage } from "@fortawesome/free-solid-svg-icons";
 import type { Project } from "@/lib/projects";
 import type { TechStackItem } from "@/lib/tech-stack";
 import { getDeviconClassName, isIconUrl } from "@/lib/devicon";
@@ -53,7 +55,10 @@ export function ProjectCard({
               className="h-40 w-full object-cover"
             />
           ) : (
-            <div className="h-40 w-full bg-surface" />
+            <div className="flex h-40 w-full flex-col items-center justify-center gap-2 bg-surface text-muted">
+              <FontAwesomeIcon icon={faImage} className="text-2xl" />
+              <span className="text-xs">No preview</span>
+            </div>
           )}
           <div className="p-5 pb-0">
             <h3 className="font-semibold group-hover:text-accent">{project.title}</h3>

@@ -10,7 +10,7 @@ export async function TechStack() {
     <section id="tech-stack">
       <SectionHeader
         title="Tech Stack"
-        viewAllHref="/tech-stack"
+        viewAllHref={items.length > 3 ? "/tech-stack" : undefined}
         viewAllLabel="View all tech stack"
       />
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">

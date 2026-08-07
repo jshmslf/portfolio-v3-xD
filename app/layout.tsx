@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { ThemeController } from "@/components/theme/theme-controller";
+import { Footer } from "@/components/layout/footer";
 import { themeScript } from "@/components/theme/theme-script";
 import { siteMetadata } from "@/lib/seo/site";
 import { getPersonSchema } from "@/lib/seo/schema";
@@ -50,6 +51,7 @@ export default async function RootLayout({
       </head>
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}
+        <Footer />
         <ThemeController versions={versions} />
       </body>
     </html>

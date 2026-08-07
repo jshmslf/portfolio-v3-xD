@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEnvelope,
@@ -15,19 +17,58 @@ import { MapPlaceholder } from "@/components/layout/map-placeholder";
 import { HireMeModal } from "@/components/layout/hire-me-modal";
 import type { SocialLink } from "@/lib/social-links";
 
+const SCROLL_REVEAL_THRESHOLD = 400;
+
 export function Sidebar({
   socialLinks = [],
   projectCount = 0,
+  avatarUrl,
 }: {
   socialLinks?: SocialLink[];
   projectCount?: number;
+  avatarUrl: string;
 }) {
   const currentRole = experience[0];
   const [hireMeOpen, setHireMeOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    let ticking = false;
+
+    function handleScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > SCROLL_REVEAL_THRESHOLD);
+        ticking = false;
+      });
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <aside className="lg:sticky lg:top-24 lg:self-start">
+    <aside className="lg:sticky lg:top-6 lg:self-start">
       <div className="flex flex-col gap-4">
+        <div
+          className={`flex items-center gap-3 overflow-hidden border border-border bg-surface transition-all duration-300 ${
+            scrolled ? "max-h-20 p-3 opacity-100" : "max-h-0 p-0 opacity-0 border-none"
+          }`}
+          style={{ borderRadius: "var(--radius)" }}
+          aria-hidden={!scrolled}
+        >
+          <Image
+            src={avatarUrl}
+            alt={profile.name}
+            width={40}
+            height={40}
+            className="h-10 w-10 shrink-0 border border-border object-cover"
+            style={{ borderRadius: "var(--radius)" }}
+          />
+          <p className="truncate font-medium">{profile.name}</p>
+        </div>
+
         <div
           className="border border-border bg-surface p-6"
           style={{ borderRadius: "var(--radius)" }}
@@ -110,9 +151,8 @@ export function Sidebar({
         </div>
       </div>
 
-      {hireMeOpen && (
-        <HireMeModal onClose={() => setHireMeOpen(false)} />
-      )}
+      {hireMeOpen &&
+        createPortal(<HireMeModal onClose={() => setHireMeOpen(false)} />, document.body)}
     </aside>
   );
 }

@@ -5,7 +5,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Container } from "@/components/ui/container";
 import { TechItem } from "@/components/sections/tech-item";
 import { getTechStack } from "@/lib/tech-stack";
-import { TECH_CATEGORIES } from "@/lib/tech-categories";
+import { getTechCategories } from "@/lib/tech-categories";
 import { profile } from "@/lib/profile";
 
 export const revalidate = 60;
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TechStackPage() {
-  const items = await getTechStack();
+  const [items, categories] = await Promise.all([getTechStack(), getTechCategories()]);
 
   return (
     <main className="flex-1 py-20">
@@ -33,7 +33,7 @@ export default async function TechStackPage() {
         </h1>
 
         <div className="mt-8 flex flex-col gap-10">
-          {TECH_CATEGORIES.map((category) => {
+          {categories.map((category) => {
             const categoryItems = items.filter((item) => item.category === category.id);
             if (categoryItems.length === 0) return null;
 

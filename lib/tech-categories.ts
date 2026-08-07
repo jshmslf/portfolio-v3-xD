@@ -1,9 +1,14 @@
-export const TECH_CATEGORIES = [
-  { id: "frontend", label: "Front-end" },
-  { id: "backend", label: "Back-end" },
-  { id: "devtools", label: "Dev Tools" },
-  { id: "ai-ml", label: "AI & Machine Learning" },
-  { id: "devops-cloud", label: "DevOps & Cloud" },
-] as const;
+import { supabase } from "@/lib/supabase/server";
 
-export type TechCategoryId = (typeof TECH_CATEGORIES)[number]["id"];
+export type TechCategoryId = string;
+
+export type TechCategory = { id: string; label: string };
+
+export async function getTechCategories(): Promise<TechCategory[]> {
+  const { data } = await supabase
+    .from("tech_categories")
+    .select("id, label")
+    .order("sort_order", { ascending: true });
+
+  return data ?? [];
+}

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faImage } from "@fortawesome/free-solid-svg-icons";
 import type { Project } from "@/lib/projects";
 import type { TechStackItem } from "@/lib/tech-stack";
 import { getDeviconClassName, isIconUrl } from "@/lib/devicon";
@@ -58,7 +58,7 @@ export function ProjectModal({
           </button>
         </div>
 
-        {project.thumbnailUrl && (
+        {project.thumbnailUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={project.thumbnailUrl}
@@ -66,7 +66,17 @@ export function ProjectModal({
             className="mt-4 w-full object-cover"
             style={{ borderRadius: "var(--radius)" }}
           />
+        ) : (
+          <div
+            className="mt-4 flex h-40 w-full flex-col items-center justify-center gap-2 bg-surface text-muted"
+            style={{ borderRadius: "var(--radius)" }}
+          >
+            <FontAwesomeIcon icon={faImage} className="text-2xl" />
+            <span className="text-xs">No preview</span>
+          </div>
         )}
+
+        <p className="mt-4 leading-relaxed text-foreground/80">{project.shortDescription}</p>
 
         {techStack.length > 0 && (
           <div className="mt-4 flex flex-wrap gap-2">

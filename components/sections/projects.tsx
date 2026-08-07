@@ -12,7 +12,7 @@ export async function Projects() {
     <section id="projects">
       <SectionHeader
         title="Projects"
-        viewAllHref="/projects"
+        viewAllHref={projects.length > 3 ? "/projects" : undefined}
         viewAllLabel="View all projects"
       />
       <div className="mt-6 grid gap-4 sm:grid-cols-2">

@@ -18,12 +18,12 @@ export function BlogCard({ post }: { post: BlogPost }) {
       className="block border border-border p-5 transition-colors hover:border-accent"
       style={{ borderRadius: "var(--radius)" }}
     >
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">
-        {[date, `By ${profile.name}`, `${computeReadingMinutes(post.content)} min read`]
+      <h3 className="font-semibold">{post.title}</h3>
+      <p className="mt-2 text-xs font-medium uppercase tracking-wide text-muted">
+        {[date, `By ${profile.name.split(" ")[0]}`, `${computeReadingMinutes(post.content)} min read`]
           .filter(Boolean)
           .join(" · ")}
       </p>
-      <h3 className="mt-2 font-semibold">{post.title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-foreground/80">
         {excerptFromContent(post.content)}
       </p>
