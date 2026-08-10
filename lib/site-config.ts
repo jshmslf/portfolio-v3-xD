@@ -3,7 +3,12 @@ export const siteConfig = {
   tagline: "I make ideas clickable.",
   location: "Remote",
   yearsExperience: "2+ years",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL &&
+      `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ??
+    (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
+    "http://localhost:3000",
   about: [
     "I'm a software engineer and Computer Science graduate of Pangasinan State University, based in Bayambang, Pangasinan, Philippines. I enjoy turning ambiguous problems into simple, reliable products, with a focus on full-stack web development.",
     "Alongside my regular work, I offer educational services, helping students with their web-related projects, including mobile apps, Python scripts, websites, and other web solutions.",
