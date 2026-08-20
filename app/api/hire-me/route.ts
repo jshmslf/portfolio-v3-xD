@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { profile } from "@/lib/profile";
-import { hireMeNotificationEmail } from "@/lib/email-templates";
+import { hireMeNotificationEmail, hireMeConfirmationEmail } from "@/lib/email-templates";
 import { getRequestIpHash } from "@/lib/likes";
 import { canSendHireMeEmail } from "@/lib/hire-me-rate-limit";
+import { getLeadReplySettings } from "@/lib/lead-reply-settings";
+import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -14,6 +16,8 @@ export async function POST(request: Request) {
   if (!name || !email || !message) {
     return NextResponse.json({ error: "Name, email, and message are required." }, { status: 400 });
   }
+
+  await supabaseAdmin.from("leads").insert({ name, email, message });
 
   const ipHash = await getRequestIpHash();
   const allowed = await canSendHireMeEmail(ipHash);
@@ -36,6 +40,20 @@ export async function POST(request: Request) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  const replySettings = await getLeadReplySettings();
+  const confirmation = hireMeConfirmationEmail({ name, ...replySettings });
+  const { error: confirmationError } = await resend.emails.send({
+    from,
+    to: email,
+    subject: confirmation.subject,
+    html: confirmation.html,
+    text: confirmation.text,
+  });
+
+  if (confirmationError) {
+    console.error("Failed to send hire-me confirmation email:", confirmationError.message);
   }
 
   return NextResponse.json({ ok: true });
