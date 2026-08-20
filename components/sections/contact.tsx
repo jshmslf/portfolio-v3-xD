@@ -21,7 +21,7 @@ export async function Contact() {
         style={{ borderRadius: "var(--radius)" }}
       >
         <FontAwesomeIcon icon={faEnvelope} />
-        {profile.email}
+        Send me an email
       </a>
       <div className="mt-8 flex flex-wrap gap-5">
         {socialLinks.map((link) => (

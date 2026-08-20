@@ -17,7 +17,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Name, email, and message are required." }, { status: 400 });
   }
 
-  await supabaseAdmin.from("leads").insert({ name, email, message });
+  const { error: leadError } = await supabaseAdmin.from("leads").insert({ name, email, message });
+
+  if (leadError) {
+    console.error("Failed to save hire-me lead:", leadError.message);
+  }
 
   const ipHash = await getRequestIpHash();
   const allowed = await canSendHireMeEmail(ipHash);
