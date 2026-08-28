@@ -1,8 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
-import { profile } from "@/lib/profile";
 import { getSocialIcon } from "@/lib/icons";
 import { getSocialLinks } from "@/lib/social-links";
+import { ContactFormButton } from "@/components/sections/contact-form-button";
 
 export async function Contact() {
   const socialLinks = await getSocialLinks();
@@ -15,14 +14,7 @@ export async function Contact() {
       <p className="mt-4 leading-relaxed text-foreground/80">
         Have a project in mind or just want to say hello? My inbox is open.
       </p>
-      <a
-        href={`mailto:${profile.email}`}
-        className="mt-6 inline-flex items-center gap-2 border border-accent bg-accent px-5 py-2.5 font-medium text-accent-foreground transition-opacity hover:opacity-90"
-        style={{ borderRadius: "var(--radius)" }}
-      >
-        <FontAwesomeIcon icon={faEnvelope} />
-        Send me an email
-      </a>
+      <ContactFormButton />
       <div className="mt-8 flex flex-wrap gap-5">
         {socialLinks.map((link) => (
           <a
