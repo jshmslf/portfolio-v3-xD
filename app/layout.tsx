@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
@@ -63,6 +64,7 @@ export default async function RootLayout({
         {children}
         <Footer />
         <ThemeController versions={versions} />
+        <Analytics />
       </body>
     </html>
   );
