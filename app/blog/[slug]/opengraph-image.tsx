@@ -3,6 +3,9 @@ import { siteConfig } from "@/lib/site-config";
 import { profile } from "@/lib/profile";
 import { getBlogPostBySlug, computeReadingMinutes } from "@/lib/blog";
 import { formatPostDate } from "@/lib/format";
+import { getOgAvatarUrl } from "@/lib/og";
+
+const AVATAR_SIZE = 56;
 
 export const size = {
   width: 1200,
@@ -15,7 +18,10 @@ export const alt = `Blog post by ${profile.name}`;
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = await getBlogPostBySlug(slug);
+  const [post, avatarUrl] = await Promise.all([
+    getBlogPostBySlug(slug),
+    getOgAvatarUrl(AVATAR_SIZE * 2),
+  ]);
 
   const title = post?.title ?? "Blog";
   const meta = post
@@ -55,8 +61,31 @@ export default async function Image({ params }: { params: Promise<{ slug: string
         >
           {title}
         </div>
-        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 28 }}>
-          <div style={{ color: "#f5f5f5" }}>{profile.name}</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontSize: 28,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 18, color: "#f5f5f5" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={avatarUrl}
+              alt=""
+              width={AVATAR_SIZE}
+              height={AVATAR_SIZE}
+              style={{
+                width: AVATAR_SIZE,
+                height: AVATAR_SIZE,
+                borderRadius: 999,
+                objectFit: "cover",
+                border: "2px solid #2a2a2a",
+              }}
+            />
+            {profile.name}
+          </div>
           <div style={{ color: "#a3a3a3" }}>{meta}</div>
         </div>
       </div>
