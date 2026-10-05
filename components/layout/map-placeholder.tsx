@@ -11,6 +11,10 @@ export function MapPlaceholder() {
       <img
         src={getPangasinanMapUrl(600, 560)}
         alt="Map of Pangasinan, Philippines"
+        width={600}
+        height={560}
+        loading="lazy"
+        decoding="async"
         className="h-full w-full object-cover"
       />
       <PhClock />

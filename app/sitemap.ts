@@ -4,35 +4,33 @@ import { getPublishedBlogPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPublishedBlogPosts();
+  const latestPostDate = posts[0]?.publishedAt ? new Date(posts[0].publishedAt) : undefined;
 
   return [
     {
       url: siteConfig.url,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
     },
     {
       url: `${siteConfig.url}/projects`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
       url: `${siteConfig.url}/blog`,
-      lastModified: new Date(),
+      lastModified: latestPostDate,
       changeFrequency: "weekly",
-      priority: 0.6,
+      priority: 0.7,
     },
     ...posts.map((post) => ({
       url: `${siteConfig.url}/blog/${post.slug}`,
-      lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+      lastModified: post.publishedAt ? new Date(post.publishedAt) : undefined,
       changeFrequency: "monthly" as const,
-      priority: 0.5,
+      priority: 0.6,
     })),
     {
       url: `${siteConfig.url}/tech-stack`,
-      lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.5,
     },

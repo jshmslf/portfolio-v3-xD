@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { TestimonialForm } from "@/components/sections/testimonial-form";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+
+// Private invite links: never index them.
+export const metadata: Metadata = {
+  title: "Share your experience",
+  robots: { index: false, follow: false },
+};
 
 async function isInviteValid(token: string): Promise<boolean> {
   const { data: invite } = await supabaseAdmin

@@ -7,7 +7,7 @@ export async function Testimonials() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="testimonials" className="flex h-full flex-col">
+    <section className="flex h-full flex-col">
       <SectionHeader title="Testimonials" />
       <div className="mt-6 flex flex-1 flex-col">
         <TestimonialCarousel testimonials={testimonials} />

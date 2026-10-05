@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { createPortal } from "react-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEnvelope,
   faFolder,
   faBriefcase,
   faLocationDot,
@@ -14,7 +12,8 @@ import { profile } from "@/lib/profile";
 import { experience } from "@/lib/experience";
 import { getSocialIcon } from "@/lib/icons";
 import { MapPlaceholder } from "@/components/layout/map-placeholder";
-import { HireMeModal } from "@/components/layout/hire-me-modal";
+import { HireMeButton } from "@/components/layout/hire-me-button";
+import { StatusDot } from "@/components/ui/status-dot";
 import type { SocialLink } from "@/lib/social-links";
 
 const SCROLL_REVEAL_THRESHOLD = 400;
@@ -29,7 +28,6 @@ export function Sidebar({
   avatarUrl: string;
 }) {
   const currentRole = experience[0];
-  const [hireMeOpen, setHireMeOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -49,10 +47,10 @@ export function Sidebar({
   }, []);
 
   return (
-    <aside className="lg:sticky lg:top-6 lg:self-start">
+    <aside className="lg:sticky lg:top-6 lg:self-start" aria-label="Profile summary">
       <div className="flex flex-col gap-4">
         <div
-          className={`flex items-center gap-3 overflow-hidden border border-border bg-surface transition-all duration-300 ${
+          className={`hidden items-center gap-3 overflow-hidden lg:flex border border-border bg-surface transition-all duration-300 ${
             scrolled ? "max-h-20 p-3 opacity-100" : "max-h-0 p-0 opacity-0 border-none"
           }`}
           style={{ borderRadius: "var(--radius)" }}
@@ -60,13 +58,19 @@ export function Sidebar({
         >
           <Image
             src={avatarUrl}
-            alt={profile.name}
+            alt=""
             width={40}
             height={40}
             className="h-10 w-10 shrink-0 border border-border object-cover"
             style={{ borderRadius: "var(--radius)" }}
           />
-          <p className="truncate font-medium">{profile.name}</p>
+          <div className="min-w-0">
+            <p className="truncate font-medium">{profile.name}</p>
+            <p className="flex items-center gap-1.5 text-xs text-muted">
+              <StatusDot />
+              Open to work
+            </p>
+          </div>
         </div>
 
         <div
@@ -90,23 +94,13 @@ export function Sidebar({
             </p>
           </div>
 
-          <div className="mt-4 flex items-center gap-3">
-            <FontAwesomeIcon icon={faEnvelope} className="text-accent" />
-            <a
-              href={`mailto:${profile.email}`}
-              className="text-sm text-muted hover:text-accent"
-            >
-              {profile.email}
-            </a>
-          </div>
-
           <div className="mt-6 flex gap-4 border-t border-border pt-4">
             {socialLinks.map((link) => (
               <a
                 key={link.id}
                 href={link.href}
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener noreferrer me"
                 aria-label={link.label}
                 className="text-muted transition-colors hover:text-accent"
               >
@@ -140,19 +134,9 @@ export function Sidebar({
           <p className="mt-1 text-sm text-muted">
             Have a role or project in mind? Let&apos;s talk.
           </p>
-          <button
-            type="button"
-            onClick={() => setHireMeOpen(true)}
-            className="mt-4 w-full border border-accent bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
-            style={{ borderRadius: "var(--radius)" }}
-          >
-            Hire me
-          </button>
+          <HireMeButton className="mt-4 w-full px-4 py-2 text-sm" />
         </div>
       </div>
-
-      {hireMeOpen &&
-        createPortal(<HireMeModal onClose={() => setHireMeOpen(false)} />, document.body)}
     </aside>
   );
 }

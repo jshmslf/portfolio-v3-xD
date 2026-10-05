@@ -7,7 +7,7 @@ export async function Blog() {
   const teaser = posts.slice(0, 2);
 
   return (
-    <section id="blog">
+    <section>
       <SectionHeader
         title="Blog"
         viewAllHref={posts.length > teaser.length ? "/blog" : undefined}

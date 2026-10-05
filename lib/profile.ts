@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase/server";
 
 export const DEFAULT_AVATAR_URL =
@@ -11,7 +12,7 @@ export const profile = {
 
 export type Profile = typeof profile;
 
-export async function getProfileAvatarUrl(): Promise<string> {
+export const getProfileAvatarUrl = cache(async (): Promise<string> => {
   const { data } = await supabase
     .from("profile")
     .select("avatar_url")
@@ -19,4 +20,4 @@ export async function getProfileAvatarUrl(): Promise<string> {
     .single();
 
   return data?.avatar_url ?? DEFAULT_AVATAR_URL;
-}
+});

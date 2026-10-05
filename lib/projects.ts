@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase/server";
 import type { BlogBlock } from "@/lib/blog";
 
@@ -42,11 +43,11 @@ function mapRow(row: ProjectRow): Project {
   };
 }
 
-export async function getProjects(): Promise<Project[]> {
+export const getProjects = cache(async (): Promise<Project[]> => {
   const { data } = await supabase
     .from("projects")
     .select(SELECT_COLUMNS)
     .order("sort_order", { ascending: true });
 
   return ((data as ProjectRow[]) ?? []).map(mapRow);
-}
+});

@@ -6,7 +6,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/testimonial/",
+      // /testimonial/* is kept crawlable on purpose: those pages carry a
+      // noindex meta tag, which crawlers can only see if they may fetch it.
+      disallow: "/api/",
     },
     sitemap: `${siteConfig.url}/sitemap.xml`,
   };

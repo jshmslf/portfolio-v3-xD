@@ -2,30 +2,17 @@
 
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faArrowUpRightFromSquare, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import type { Project } from "@/lib/projects";
 import type { TechStackItem } from "@/lib/tech-stack";
-import { getDeviconClassName, isIconUrl } from "@/lib/devicon";
 import { ProjectModal } from "@/components/sections/project-modal";
+import { TechIcon } from "@/components/sections/tech-icon";
 
 const DESCRIPTION_LENGTH = 120;
-const MAX_TECH_ICONS = 3;
+const MAX_TECH_CHIPS = 3;
 
 function excerpt(text: string): string {
   return text.length > DESCRIPTION_LENGTH ? `${text.slice(0, DESCRIPTION_LENGTH).trimEnd()}...` : text;
-}
-
-function TechIcon({ tech }: { tech: TechStackItem }) {
-  return isIconUrl(tech.iconSlug) ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={tech.iconSlug} alt={tech.name} title={tech.name} className="h-4 w-4" />
-  ) : (
-    <i
-      className={getDeviconClassName(tech.iconSlug)}
-      title={tech.name}
-      style={{ fontSize: "1rem" }}
-    />
-  );
 }
 
 export function ProjectCard({
@@ -36,70 +23,98 @@ export function ProjectCard({
   techStack: TechStackItem[];
 }) {
   const [open, setOpen] = useState(false);
-  const visibleTech = techStack.slice(0, MAX_TECH_ICONS);
-  const remaining = techStack.length - MAX_TECH_ICONS;
+  const visibleTech = techStack.slice(0, MAX_TECH_CHIPS);
+  const remaining = techStack.length - MAX_TECH_CHIPS;
   const canGoLive = project.isLive && project.liveUrl;
 
   return (
     <>
-      <div
-        className="group flex flex-col overflow-hidden border border-border transition-colors hover:border-accent"
+      <article
+        className="group flex h-full flex-col overflow-hidden border border-border bg-surface/40 transition-all duration-300 hover:-translate-y-0.5 hover:border-accent hover:shadow-xl hover:shadow-accent/5"
         style={{ borderRadius: "var(--radius)" }}
       >
-        <button type="button" onClick={() => setOpen(true)} className="flex flex-col text-left">
-          {project.thumbnailUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={project.thumbnailUrl}
-              alt={project.title}
-              className="h-40 w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-40 w-full flex-col items-center justify-center gap-2 bg-surface text-muted">
-              <FontAwesomeIcon icon={faImage} className="text-2xl" />
-              <span className="text-xs">No preview</span>
-            </div>
-          )}
-          <div className="p-5 pb-0">
-            <h3 className="font-semibold group-hover:text-accent">{project.title}</h3>
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          className="flex flex-1 flex-col text-left"
+        >
+          <div className="relative aspect-video w-full overflow-hidden border-b border-border bg-surface">
+            {project.thumbnailUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={project.thumbnailUrl}
+                alt={`${project.title} screenshot`}
+                width={640}
+                height={360}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted">
+                <FontAwesomeIcon icon={faImage} className="text-2xl" />
+                <span className="text-xs">No preview</span>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-1 flex-col p-5 pb-0">
+            <h3 className="font-semibold transition-colors group-hover:text-accent-text">
+              {project.title}
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">
               {excerpt(project.shortDescription)}
             </p>
             {techStack.length > 0 && (
-              <div className="mt-4 flex items-center gap-2">
+              <ul className="mt-4 flex flex-wrap items-center gap-1.5" aria-label="Built with">
                 {visibleTech.map((tech) => (
-                  <TechIcon key={tech.id} tech={tech} />
+                  <li
+                    key={tech.id}
+                    className="flex items-center gap-1.5 border border-border bg-background px-2 py-0.5 text-xs text-muted"
+                    style={{ borderRadius: "var(--radius)" }}
+                  >
+                    <TechIcon tech={tech} size="0.75rem" />
+                    {tech.name}
+                  </li>
                 ))}
-                {remaining > 0 && <span className="text-xs text-muted">+{remaining} more</span>}
-              </div>
+                {remaining > 0 && <li className="text-xs text-muted">+{remaining} more</li>}
+              </ul>
             )}
           </div>
         </button>
-        <div className="p-5 pt-4">
+        <div className="flex items-center justify-between gap-3 p-5 pt-4">
           {canGoLive ? (
             <a
               href={project.liveUrl!}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="inline-block border border-accent bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-opacity hover:opacity-90"
+              className="inline-flex items-center gap-1.5 border border-accent bg-accent px-3 py-1.5 text-xs font-medium text-accent-foreground transition-opacity hover:opacity-90"
               style={{ borderRadius: "var(--radius)" }}
             >
               View live
+              <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-[0.625rem]" />
+              <span className="sr-only">(opens {project.title} in a new tab)</span>
             </a>
           ) : (
-            <button
-              type="button"
-              disabled
-              onClick={(e) => e.stopPropagation()}
-              className="cursor-not-allowed border border-border px-3 py-1.5 text-xs font-medium text-muted opacity-60"
+            <span
+              className="border border-border px-3 py-1.5 text-xs font-medium text-muted"
               style={{ borderRadius: "var(--radius)" }}
             >
               Not live
-            </button>
+            </span>
           )}
+          <span
+            aria-hidden="true"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted transition-colors group-hover:text-accent-text"
+          >
+            Details
+            <FontAwesomeIcon
+              icon={faArrowRight}
+              className="text-[0.625rem] transition-transform group-hover:translate-x-0.5"
+            />
+          </span>
         </div>
-      </div>
+      </article>
 
       {open && (
         <ProjectModal project={project} techStack={techStack} onClose={() => setOpen(false)} />

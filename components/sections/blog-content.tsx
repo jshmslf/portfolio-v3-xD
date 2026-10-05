@@ -1,4 +1,11 @@
-import type { BlogBlock } from "@/lib/blog";
+import type { BlogBlock, BlogImageSize } from "@/lib/blog";
+
+const IMAGE_SIZE_CLASS: Record<BlogImageSize, string> = {
+  small: "w-60 max-w-full",
+  medium: "w-[480px] max-w-full",
+  large: "w-[720px] max-w-full",
+  full: "w-full",
+};
 
 export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
   return (
@@ -55,6 +62,21 @@ export function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
                 key={index}
                 className="border-l-2 border-accent pl-4 italic text-foreground/80 [&_a]:underline"
                 dangerouslySetInnerHTML={{ __html: block.html ?? "" }}
+              />
+            );
+          case "image":
+            if (!block.url) return null;
+            return (
+              // Arbitrary https URL from the CMS (not always Cloudinary), so
+              // next/image's remotePatterns allowlist can't cover it.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={index}
+                src={block.url}
+                alt={block.alt ?? ""}
+                loading="lazy"
+                className={`h-auto ${IMAGE_SIZE_CLASS[block.size ?? "full"] ?? IMAGE_SIZE_CLASS.full}`}
+                style={{ borderRadius: "var(--radius)" }}
               />
             );
         }

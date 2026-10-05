@@ -1,18 +1,31 @@
 import { experience } from "@/lib/experience";
+import { SectionHeader } from "@/components/ui/section-header";
 
 export function Experience() {
   return (
-    <section id="experience">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-accent">
-        Experience
-      </h2>
+    <section>
+      <SectionHeader title="Experience" />
       <ol className="mt-6 space-y-8 border-l border-border pl-6">
-        {experience.map((item) => (
+        {experience.map((item, index) => (
           <li key={`${item.org}-${item.period}`} className="relative">
+            {/* Centered on the 1px timeline: -(24px padding + 1px border) - 6px half-dot + 0.5px */}
             <span
-              className="absolute -left-[29px] top-1.5 h-2.5 w-2.5 bg-accent"
-              style={{ borderRadius: "var(--radius)" }}
-            />
+              aria-hidden="true"
+              className="absolute -left-[30.5px] top-1 flex h-3 w-3"
+            >
+              {index === 0 && (
+                <span
+                  className="absolute inline-flex h-full w-full animate-ping bg-accent opacity-60"
+                  style={{ borderRadius: "var(--radius)" }}
+                />
+              )}
+              <span
+                className={`relative inline-flex h-3 w-3 ring-4 ring-background ${
+                  index === 0 ? "bg-accent" : "bg-border"
+                }`}
+                style={{ borderRadius: "var(--radius)" }}
+              />
+            </span>
             <p className="text-xs font-medium uppercase tracking-wide text-muted">
               {item.period}
             </p>

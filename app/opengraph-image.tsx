@@ -9,6 +9,8 @@ export const size = {
 
 export const contentType = "image/png";
 
+export const alt = `${profile.name}, ${siteConfig.role}`;
+
 export default function Image() {
   return new ImageResponse(
     (

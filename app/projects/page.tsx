@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Container } from "@/components/ui/container";
+import { PageHeader } from "@/components/ui/page-header";
 import { ProjectCard } from "@/components/sections/project-card";
 import { getProjects } from "@/lib/projects";
 import { getTechStack } from "@/lib/tech-stack";
 import { profile } from "@/lib/profile";
+import { pageMetadata } from "@/lib/seo/site";
 
-export const metadata: Metadata = {
+const DESCRIPTION = `Web apps, mobile apps, and tools built by ${profile.name}, a software engineer from Pangasinan, Philippines, with the tech stack behind each one.`;
+
+export const metadata = pageMetadata({
   title: "Projects",
-  description: `All projects by ${profile.name}.`,
-};
+  description: DESCRIPTION,
+  path: "/projects",
+});
 
 export const revalidate = 60;
 
@@ -20,19 +21,17 @@ export default async function ProjectsPage() {
   const techById = new Map(techStack.map((tech) => [tech.id, tech]));
 
   return (
-    <main className="flex-1 py-20">
+    <main className="flex-1 pt-20 pb-24">
       <Container>
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-accent"
-        >
-          <FontAwesomeIcon icon={faArrowLeft} className="text-xs" />
-          Back to home
-        </Link>
-        <h1 className="mt-6 text-3xl font-semibold tracking-tight">
-          All projects
-        </h1>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <PageHeader
+          title="Projects"
+          description="A collection of things I've designed and built, from client work to side projects. Open any card for the full write-up."
+          breadcrumbs={[
+            { name: "Home", path: "/" },
+            { name: "Projects", path: "/projects" },
+          ]}
+        />
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
@@ -41,6 +40,7 @@ export default async function ProjectsPage() {
             />
           ))}
         </div>
+        {projects.length === 0 && <p className="mt-10 text-sm text-muted">No projects yet.</p>}
       </Container>
     </main>
   );

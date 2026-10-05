@@ -9,7 +9,7 @@ export async function Projects() {
   const featured = projects.filter((project) => project.featured);
 
   return (
-    <section id="projects">
+    <section>
       <SectionHeader
         title="Projects"
         viewAllHref={projects.length > 3 ? "/projects" : undefined}

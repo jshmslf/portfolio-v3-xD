@@ -1,21 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import type { Project } from "@/lib/projects";
 import type { TechStackItem } from "@/lib/tech-stack";
-import { getDeviconClassName, isIconUrl } from "@/lib/devicon";
 import { BlogContent } from "@/components/sections/blog-content";
-
-function TechIcon({ tech }: { tech: TechStackItem }) {
-  return isIconUrl(tech.iconSlug) ? (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img src={tech.iconSlug} alt="" className="h-3.5 w-3.5" />
-  ) : (
-    <i className={getDeviconClassName(tech.iconSlug)} style={{ fontSize: "0.875rem" }} />
-  );
-}
+import { TechIcon } from "@/components/sections/tech-icon";
+import { Modal } from "@/components/ui/modal";
 
 export function ProjectModal({
   project,
@@ -26,100 +17,80 @@ export function ProjectModal({
   techStack: TechStackItem[];
   onClose: () => void;
 }) {
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose]);
-
   const canGoLive = project.isLive && project.liveUrl;
+  const titleId = `project-${project.id}`;
 
   return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/40 p-4"
-      onClick={onClose}
-    >
-      <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto border border-border bg-surface p-6 shadow-lg"
-        style={{ borderRadius: "var(--radius)" }}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-xl font-semibold">{project.title}</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="shrink-0 text-muted hover:text-accent"
-          >
-            <FontAwesomeIcon icon={faXmark} />
-          </button>
-        </div>
+    <Modal onClose={onClose} labelledBy={titleId} size="lg">
+      <h2 id={titleId} className="pr-8 text-xl font-semibold">
+        {project.title}
+      </h2>
 
-        {project.thumbnailUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={project.thumbnailUrl}
-            alt={project.title}
-            className="mt-4 w-full object-cover"
+      {project.thumbnailUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={project.thumbnailUrl}
+          alt={`${project.title} screenshot`}
+          width={1280}
+          height={720}
+          decoding="async"
+          className="mt-4 aspect-video w-full border border-border object-cover"
+          style={{ borderRadius: "var(--radius)" }}
+        />
+      ) : (
+        <div
+          className="mt-4 flex aspect-video w-full flex-col items-center justify-center gap-2 border border-border bg-background text-muted"
+          style={{ borderRadius: "var(--radius)" }}
+        >
+          <FontAwesomeIcon icon={faImage} className="text-2xl" />
+          <span className="text-xs">No preview</span>
+        </div>
+      )}
+
+      <p className="mt-4 leading-relaxed text-foreground/80">{project.shortDescription}</p>
+
+      {techStack.length > 0 && (
+        <ul className="mt-4 flex flex-wrap gap-2" aria-label="Built with">
+          {techStack.map((tech) => (
+            <li
+              key={tech.id}
+              className="flex items-center gap-1.5 border border-border px-2 py-1 text-xs text-muted"
+              style={{ borderRadius: "var(--radius)" }}
+            >
+              <TechIcon tech={tech} size="0.875rem" />
+              {tech.name}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="mt-5">
+        {canGoLive ? (
+          <a
+            href={project.liveUrl!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 border border-accent bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
             style={{ borderRadius: "var(--radius)" }}
-          />
+          >
+            View live
+            <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-xs" />
+          </a>
         ) : (
-          <div
-            className="mt-4 flex h-40 w-full flex-col items-center justify-center gap-2 bg-surface text-muted"
+          <span
+            className="inline-block border border-border px-4 py-2 text-sm font-medium text-muted"
             style={{ borderRadius: "var(--radius)" }}
           >
-            <FontAwesomeIcon icon={faImage} className="text-2xl" />
-            <span className="text-xs">No preview</span>
-          </div>
+            Not live
+          </span>
         )}
+      </div>
 
-        <p className="mt-4 leading-relaxed text-foreground/80">{project.shortDescription}</p>
-
-        {techStack.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {techStack.map((tech) => (
-              <span
-                key={tech.id}
-                className="flex items-center gap-1.5 border border-border px-2 py-1 text-xs text-muted"
-                style={{ borderRadius: "var(--radius)" }}
-              >
-                <TechIcon tech={tech} />
-                {tech.name}
-              </span>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-4">
-          {canGoLive ? (
-            <a
-              href={project.liveUrl!}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block border border-accent bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
-              style={{ borderRadius: "var(--radius)" }}
-            >
-              View live
-            </a>
-          ) : (
-            <button
-              type="button"
-              disabled
-              className="cursor-not-allowed border border-border px-4 py-2 text-sm font-medium text-muted opacity-60"
-              style={{ borderRadius: "var(--radius)" }}
-            >
-              Not live
-            </button>
-          )}
-        </div>
-
-        <div className="mt-6">
+      {project.content?.length > 0 && (
+        <div className="mt-6 border-t border-border pt-6">
           <BlogContent blocks={project.content} />
         </div>
-      </div>
-    </div>
+      )}
+    </Modal>
   );
 }

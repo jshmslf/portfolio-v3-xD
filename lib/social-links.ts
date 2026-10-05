@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase/server";
 
 export type SocialLink = {
@@ -14,7 +15,7 @@ type SocialLinkRow = {
   icon_key: string;
 };
 
-export async function getSocialLinks(): Promise<SocialLink[]> {
+export const getSocialLinks = cache(async (): Promise<SocialLink[]> => {
   const { data } = await supabase
     .from("social_links")
     .select("id, label, href, icon_key")
@@ -26,4 +27,4 @@ export async function getSocialLinks(): Promise<SocialLink[]> {
     href: row.href,
     iconKey: row.icon_key,
   }));
-}
+});

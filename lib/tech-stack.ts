@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase/server";
 import type { TechCategoryId } from "@/lib/tech-categories";
 
@@ -17,7 +18,7 @@ type TechStackRow = {
   featured: boolean;
 };
 
-export async function getTechStack(): Promise<TechStackItem[]> {
+export const getTechStack = cache(async (): Promise<TechStackItem[]> => {
   const { data } = await supabase
     .from("tech_stack")
     .select("id, name, icon_slug, category, featured")
@@ -30,4 +31,4 @@ export async function getTechStack(): Promise<TechStackItem[]> {
     category: row.category,
     featured: row.featured,
   }));
-}
+});

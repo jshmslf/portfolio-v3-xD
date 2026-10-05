@@ -13,16 +13,20 @@ export function SectionHeader({
 }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-accent">
+      <h2 className="flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-accent-text">
+        <span aria-hidden="true" className="h-px w-6 bg-accent" />
         {title}
       </h2>
       {viewAllHref && (
         <Link
           href={viewAllHref}
-          className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+          className="group inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-accent-text"
         >
           {viewAllLabel}
-          <FontAwesomeIcon icon={faArrowRight} className="text-xs" />
+          <FontAwesomeIcon
+            icon={faArrowRight}
+            className="text-xs transition-transform group-hover:translate-x-0.5"
+          />
         </Link>
       )}
     </div>

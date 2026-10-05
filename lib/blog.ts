@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { supabase } from "@/lib/supabase/server";
 
 export type BlogListItem = { html: string; indent: 0 | 1 };
@@ -6,7 +7,11 @@ export type BlogBlock =
   | { type: "paragraph"; html: string }
   | { type: "heading"; level: 2 | 3; text: string }
   | { type: "list"; style: "bulleted" | "numbered"; items: BlogListItem[] }
-  | { type: "quote"; html: string };
+  | { type: "quote"; html: string }
+  | { type: "image"; url: string; alt: string; size?: BlogImageSize };
+
+// Mirrors portfolio-cms's lib/image-block-size.ts — the CMS writes these.
+export type BlogImageSize = "small" | "medium" | "large" | "full";
 
 export type BlogPost = {
   id: string;
@@ -46,7 +51,7 @@ function mapRow(row: BlogPostRow): BlogPost {
   };
 }
 
-export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
+export const getPublishedBlogPosts = cache(async (): Promise<BlogPost[]> => {
   const { data } = await supabase
     .from("blog_posts")
     .select(SELECT_COLUMNS)
@@ -54,7 +59,7 @@ export async function getPublishedBlogPosts(): Promise<BlogPost[]> {
     .order("published_at", { ascending: false });
 
   return (data ?? []).map(mapRow);
-}
+});
 
 export async function searchPublishedBlogPosts(query: string): Promise<BlogPost[]> {
   const { data } = await supabase
@@ -67,7 +72,8 @@ export async function searchPublishedBlogPosts(query: string): Promise<BlogPost[
   return (data ?? []).map(mapRow);
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
+// Cached so generateMetadata and the page share one query per request.
+export const getBlogPostBySlug = cache(async (slug: string): Promise<BlogPost | null> => {
   const { data } = await supabase
     .from("blog_posts")
     .select(SELECT_COLUMNS)
@@ -76,7 +82,7 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     .single();
 
   return data ? mapRow(data) : null;
-}
+});
 
 export function excerptFromContent(content: BlogBlock[], maxLength = 160): string {
   const paragraph = content.find((block) => block.type === "paragraph");
@@ -88,8 +94,23 @@ export function excerptFromContent(content: BlogBlock[], maxLength = 160): strin
 
 const WORDS_PER_MINUTE = 200;
 
+const HTML_ENTITIES: Record<string, string> = {
+  "&amp;": "&",
+  "&nbsp;": " ",
+  "&quot;": '"',
+  "&#39;": "'",
+  "&apos;": "'",
+  "&lt;": "<",
+  "&gt;": ">",
+};
+
 function stripHtml(html: string | undefined): string {
-  return html ? html.replace(/<[^>]+>/g, " ") : "";
+  if (!html) return "";
+  return html
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&(?:amp|nbsp|quot|#39|apos|lt|gt);/g, (entity) => HTML_ENTITIES[entity])
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function textOf(block: BlogBlock): string {
@@ -101,6 +122,8 @@ function textOf(block: BlogBlock): string {
       return block.text ?? "";
     case "list":
       return (block.items ?? []).map((item) => stripHtml(item.html)).join(" ");
+    case "image":
+      return block.alt ?? "";
   }
 }
 

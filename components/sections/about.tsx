@@ -1,12 +1,11 @@
 import { siteConfig } from "@/lib/site-config";
+import { SectionHeader } from "@/components/ui/section-header";
 
 export function About() {
   return (
-    <section id="about">
-      <h2 className="text-sm font-semibold uppercase tracking-wide text-accent">
-        About
-      </h2>
-      <div className="mt-4 space-y-4">
+    <section>
+      <SectionHeader title="About" />
+      <div className="mt-6 space-y-4 text-lg">
         {siteConfig.about.map((paragraph) => (
           <p key={paragraph} className="leading-relaxed text-foreground/80">
             {paragraph}

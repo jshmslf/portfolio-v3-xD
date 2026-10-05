@@ -7,7 +7,7 @@ export async function TechStack() {
   const featured = items.filter((item) => item.featured);
 
   return (
-    <section id="tech-stack">
+    <section>
       <SectionHeader
         title="Tech Stack"
         viewAllHref={items.length > 3 ? "/tech-stack" : undefined}

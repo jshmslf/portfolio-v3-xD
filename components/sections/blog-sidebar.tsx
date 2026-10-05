@@ -41,7 +41,7 @@ export function BlogSidebar({
   const encodedTitle = encodeURIComponent(shareTitle);
 
   return (
-    <aside className="lg:sticky lg:top-24 lg:self-start">
+    <aside className="lg:sticky lg:top-24 lg:self-start" aria-label="More from the blog">
       <div className="flex flex-col gap-4">
         <div
           className="border border-border bg-surface p-5"
@@ -50,6 +50,8 @@ export function BlogSidebar({
           <p className="text-xs font-medium uppercase tracking-wide text-muted">Search</p>
           <form onSubmit={handleSearch} className="mt-3 flex gap-2">
             <input
+              type="search"
+              aria-label="Search posts"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search posts..."
