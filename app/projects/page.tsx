@@ -3,16 +3,17 @@ import { PageHeader } from "@/components/ui/page-header";
 import { ProjectCard } from "@/components/sections/project-card";
 import { getProjects } from "@/lib/projects";
 import { getTechStack } from "@/lib/tech-stack";
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { pageMetadata } from "@/lib/seo/site";
 
-const DESCRIPTION = `Web apps, mobile apps, and tools built by ${profile.name}, a software engineer from Pangasinan, Philippines, with the tech stack behind each one.`;
-
-export const metadata = pageMetadata({
-  title: "Projects",
-  description: DESCRIPTION,
-  path: "/projects",
-});
+export async function generateMetadata() {
+  const profile = await getSiteProfile();
+  return pageMetadata({
+    title: "Projects",
+    description: `Web apps, mobile apps, and tools built by ${profile.name}, a software engineer from Pangasinan, Philippines, with the tech stack behind each one.`,
+    path: "/projects",
+  });
+}
 
 export const revalidate = 60;
 

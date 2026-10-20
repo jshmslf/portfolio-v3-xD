@@ -25,6 +25,15 @@ export async function POST(
     return NextResponse.json({ error: insertError.message }, { status: 500 });
   }
 
+  // Atomic increment; falls back to read-then-write if the function is missing.
+  const { data: rpcCount, error: rpcError } = await supabaseAdmin.rpc("increment_blog_likes", {
+    p_post_id: postId,
+  });
+
+  if (!rpcError && typeof rpcCount === "number") {
+    return NextResponse.json({ liked: true, likesCount: rpcCount });
+  }
+
   const { data, error } = await supabaseAdmin
     .from("blog_posts")
     .select("likes_count")

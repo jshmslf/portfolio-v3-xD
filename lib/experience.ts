@@ -1,4 +1,15 @@
-export const experience = [
+import { cache } from "react";
+import { supabase } from "@/lib/supabase/server";
+
+export type ExperienceItem = {
+  role: string;
+  org: string;
+  period: string;
+  description: string;
+};
+
+/** Used when the CMS-managed `experience` table is missing, empty, or errors. */
+export const DEFAULT_EXPERIENCE: ExperienceItem[] = [
   {
     role: "Backend Web Developer",
     org: "Midfield Enterprises",
@@ -34,6 +45,21 @@ export const experience = [
     description:
       "Started my career building internal tools and learning the fundamentals of shipping production software.",
   },
-] as const;
+];
 
-export type ExperienceItem = (typeof experience)[number];
+/** Ordered timeline; the first item is the current role. */
+export const getExperience = cache(async (): Promise<ExperienceItem[]> => {
+  const { data, error } = await supabase
+    .from("experience")
+    .select("role, org, period, description")
+    .order("sort_order", { ascending: true });
+
+  if (error || !data || data.length === 0) return DEFAULT_EXPERIENCE;
+
+  return data.map((row) => ({
+    role: row.role ?? "",
+    org: row.org ?? "",
+    period: row.period ?? "",
+    description: row.description ?? "",
+  }));
+});

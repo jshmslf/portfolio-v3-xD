@@ -1,16 +1,17 @@
 import { siteConfig } from "@/lib/site-config";
-import { profile, getProfileAvatarUrl } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { getSocialLinks } from "@/lib/social-links";
-import { experience } from "@/lib/experience";
+import { getExperience } from "@/lib/experience";
 import { excerptFromContent, type BlogPost } from "@/lib/blog";
 
 const PERSON_ID = `${siteConfig.url}/#person`;
 const WEBSITE_ID = `${siteConfig.url}/#website`;
 
 export async function getPersonSchema() {
-  const [socialLinks, avatarUrl] = await Promise.all([
+  const [socialLinks, profile, experience] = await Promise.all([
     getSocialLinks(),
-    getProfileAvatarUrl(),
+    getSiteProfile(),
+    getExperience(),
   ]);
   const currentRole = experience[0];
 
@@ -19,20 +20,22 @@ export async function getPersonSchema() {
     "@type": "Person",
     "@id": PERSON_ID,
     name: profile.name,
-    jobTitle: siteConfig.role,
-    description: siteConfig.seoDescription,
+    jobTitle: profile.role,
+    description: profile.seoDescription,
     url: siteConfig.url,
-    image: avatarUrl,
+    image: profile.avatarUrl,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Bayambang",
       addressRegion: "Pangasinan",
       addressCountry: "PH",
     },
-    worksFor: {
-      "@type": "Organization",
-      name: currentRole.org,
-    },
+    ...(currentRole && {
+      worksFor: {
+        "@type": "Organization",
+        name: currentRole.org,
+      },
+    }),
     alumniOf: {
       "@type": "CollegeOrUniversity",
       name: "Pangasinan State University",
@@ -52,7 +55,9 @@ export async function getPersonSchema() {
   };
 }
 
-export function getWebSiteSchema() {
+export async function getWebSiteSchema() {
+  const profile = await getSiteProfile();
+
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -61,13 +66,14 @@ export function getWebSiteSchema() {
     name: profile.name,
     alternateName: [`${profile.name} Portfolio`, "jshmslf"],
     url: siteConfig.url,
-    description: siteConfig.seoDescription,
+    description: profile.seoDescription,
     inLanguage: "en",
     publisher: { "@id": PERSON_ID },
   };
 }
 
-export function getBlogPostingSchema(post: BlogPost) {
+export async function getBlogPostingSchema(post: BlogPost) {
+  const profile = await getSiteProfile();
   const url = `${siteConfig.url}/blog/${post.slug}`;
 
   return {

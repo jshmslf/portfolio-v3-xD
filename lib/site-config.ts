@@ -1,7 +1,6 @@
+// Name, role, tagline, address, about, and SEO description are CMS-managed:
+// see `getSiteProfile()` / `DEFAULT_SITE_PROFILE` in `lib/site-profile.ts`.
 export const siteConfig = {
-  role: "Software Engineer & Graphic Artist",
-  tagline: "I make ideas clickable.",
-  location: "Remote",
   yearsExperience: "2+ years",
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
@@ -9,12 +8,6 @@ export const siteConfig = {
       `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) ??
     (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) ??
     "http://localhost:3000",
-  about: [
-    "I'm a software engineer and Computer Science graduate of Pangasinan State University, based in Bayambang, Pangasinan, Philippines. I enjoy turning ambiguous problems into simple, reliable products, with a focus on full-stack web development.",
-    "Alongside my regular work, I offer educational services, helping students with their web-related projects, including mobile apps, Python scripts, websites, and other web solutions.",
-  ],
-  seoDescription:
-    "Joshua Verceles is a Software Engineer and Computer Science graduate of Pangasinan State University, based in Bayambang, Pangasinan, Philippines, building web and mobile solutions.",
   seoKeywords: [
     "Bayambang",
     "Pangasinan",

@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site-config";
 import { getPublishedBlogPosts } from "@/lib/blog";
 
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPublishedBlogPosts();
   const latestPostDate = posts[0]?.publishedAt ? new Date(posts[0].publishedAt) : undefined;

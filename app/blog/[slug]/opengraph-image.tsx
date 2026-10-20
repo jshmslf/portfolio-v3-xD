@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { siteConfig } from "@/lib/site-config";
-import { profile } from "@/lib/profile";
+import { DEFAULT_SITE_PROFILE, getSiteProfile } from "@/lib/site-profile";
 import { getBlogPostBySlug, computeReadingMinutes } from "@/lib/blog";
 import { formatPostDate } from "@/lib/format";
 import { getOgAvatarUrl } from "@/lib/og";
@@ -14,13 +13,15 @@ export const size = {
 
 export const contentType = "image/png";
 
-export const alt = `Blog post by ${profile.name}`;
+// Must be a static string; the CMS name is only used in the image itself.
+export const alt = `Blog post by ${DEFAULT_SITE_PROFILE.name}`;
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const [post, avatarUrl] = await Promise.all([
+  const [post, avatarUrl, profile] = await Promise.all([
     getBlogPostBySlug(slug),
     getOgAvatarUrl(AVATAR_SIZE * 2),
+    getSiteProfile(),
   ]);
 
   const title = post?.title ?? "Blog";
@@ -31,7 +32,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
       ]
         .filter(Boolean)
         .join("  ·  ")
-    : siteConfig.role;
+    : profile.role;
 
   return new ImageResponse(
     (

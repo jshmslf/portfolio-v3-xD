@@ -3,16 +3,19 @@ import { PageHeader } from "@/components/ui/page-header";
 import { TechItem } from "@/components/sections/tech-item";
 import { getTechStack } from "@/lib/tech-stack";
 import { getTechCategories } from "@/lib/tech-categories";
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { pageMetadata } from "@/lib/seo/site";
 
 export const revalidate = 60;
 
-export const metadata = pageMetadata({
-  title: "Tech Stack",
-  description: `The languages, frameworks, databases, and design tools ${profile.name} uses to build web and mobile products.`,
-  path: "/tech-stack",
-});
+export async function generateMetadata() {
+  const profile = await getSiteProfile();
+  return pageMetadata({
+    title: "Tech Stack",
+    description: `The languages, frameworks, databases, and design tools ${profile.name} uses to build web and mobile products.`,
+    path: "/tech-stack",
+  });
+}
 
 export default async function TechStackPage() {
   const [items, categories] = await Promise.all([getTechStack(), getTechCategories()]);

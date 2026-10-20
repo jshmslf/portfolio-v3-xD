@@ -1,20 +1,20 @@
 import { siteConfig } from "@/lib/site-config";
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { getPublishedBlogPosts, excerptFromContent } from "@/lib/blog";
 
 export const revalidate = 3600;
 
 export async function GET() {
-  const posts = await getPublishedBlogPosts();
+  const [posts, profile] = await Promise.all([getPublishedBlogPosts(), getSiteProfile()]);
 
   const lines = [
     `# ${profile.name}`,
     "",
-    `> ${siteConfig.tagline} ${siteConfig.seoDescription}`,
+    `> ${profile.tagline} ${profile.seoDescription}`,
     "",
     "## Pages",
     "",
-    `- [Home](${siteConfig.url}/): ${siteConfig.role}, based in ${profile.address}.`,
+    `- [Home](${siteConfig.url}/): ${profile.role}, based in ${profile.address}.`,
     `- [Projects](${siteConfig.url}/projects): Selected software projects.`,
     `- [Tech stack](${siteConfig.url}/tech-stack): Tools and technologies used.`,
     `- [Blog](${siteConfig.url}/blog): Writing by ${profile.name}.`,

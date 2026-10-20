@@ -47,6 +47,8 @@ export const getProjects = cache(async (): Promise<Project[]> => {
   const { data } = await supabase
     .from("projects")
     .select(SELECT_COLUMNS)
+    // Drafts are CMS-only (see portfolio-cms migration 011).
+    .eq("status", "published")
     .order("sort_order", { ascending: true });
 
   return ((data as ProjectRow[]) ?? []).map(mapRow);

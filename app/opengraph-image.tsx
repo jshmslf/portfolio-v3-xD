@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/lib/site-config";
-import { profile } from "@/lib/profile";
+import { DEFAULT_SITE_PROFILE, getSiteProfile } from "@/lib/site-profile";
 import { getOgAvatarUrl } from "@/lib/og";
 
 export const size = {
@@ -10,7 +10,8 @@ export const size = {
 
 export const contentType = "image/png";
 
-export const alt = `${profile.name}, ${siteConfig.role}`;
+// Must be a static string; the CMS name/role are only used in the image itself.
+export const alt = `${DEFAULT_SITE_PROFILE.name}, ${DEFAULT_SITE_PROFILE.role}`;
 
 // Pick up a new avatar from the CMS without a redeploy.
 export const revalidate = 3600;
@@ -18,7 +19,10 @@ export const revalidate = 3600;
 const PHOTO_SIZE = 360;
 
 export default async function Image() {
-  const avatarUrl = await getOgAvatarUrl(PHOTO_SIZE * 2);
+  const [avatarUrl, profile] = await Promise.all([
+    getOgAvatarUrl(PHOTO_SIZE * 2),
+    getSiteProfile(),
+  ]);
   const host = new URL(siteConfig.url).host;
 
   return new ImageResponse(
@@ -57,7 +61,7 @@ export default async function Image() {
             {profile.name}
           </div>
           <div style={{ fontSize: 32, color: "#a3a3a3", marginTop: 18, lineHeight: 1.3 }}>
-            {siteConfig.role}
+            {profile.role}
           </div>
           <div
             style={{

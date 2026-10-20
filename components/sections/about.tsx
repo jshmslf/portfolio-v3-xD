@@ -1,13 +1,15 @@
-import { siteConfig } from "@/lib/site-config";
+import { getSiteProfile } from "@/lib/site-profile";
 import { SectionHeader } from "@/components/ui/section-header";
 
-export function About() {
+export async function About() {
+  const { about } = await getSiteProfile();
+
   return (
     <section>
       <SectionHeader title="About" />
       <div className="mt-6 space-y-4 text-lg">
-        {siteConfig.about.map((paragraph) => (
-          <p key={paragraph} className="leading-relaxed text-foreground/80">
+        {about.map((paragraph, index) => (
+          <p key={index} className="leading-relaxed text-foreground/80">
             {paragraph}
           </p>
         ))}

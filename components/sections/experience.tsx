@@ -1,13 +1,15 @@
-import { experience } from "@/lib/experience";
+import { getExperience } from "@/lib/experience";
 import { SectionHeader } from "@/components/ui/section-header";
 
-export function Experience() {
+export async function Experience() {
+  const experience = await getExperience();
+
   return (
     <section>
       <SectionHeader title="Experience" />
       <ol className="mt-6 space-y-8 border-l border-border pl-6">
         {experience.map((item, index) => (
-          <li key={`${item.org}-${item.period}`} className="relative">
+          <li key={`${index}-${item.org}`} className="relative">
             {/* Centered on the 1px timeline: -(24px padding + 1px border) - 6px half-dot + 0.5px */}
             <span
               aria-hidden="true"

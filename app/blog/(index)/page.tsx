@@ -3,20 +3,19 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { BlogCard } from "@/components/sections/blog-card";
 import { getPublishedBlogPosts, searchPublishedBlogPosts } from "@/lib/blog";
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { pageMetadata } from "@/lib/seo/site";
 
 export const revalidate = 60;
-
-const DESCRIPTION = `Articles by ${profile.name} on web development, software engineering, and the things learned building real projects.`;
 
 type BlogPageProps = {
   searchParams: Promise<{ search?: string }>;
 };
 
 export async function generateMetadata({ searchParams }: BlogPageProps): Promise<Metadata> {
-  const { search } = await searchParams;
-  const metadata = pageMetadata({ title: "Blog", description: DESCRIPTION, path: "/blog" });
+  const [{ search }, profile] = await Promise.all([searchParams, getSiteProfile()]);
+  const description = `Articles by ${profile.name} on web development, software engineering, and the things learned building real projects.`;
+  const metadata = await pageMetadata({ title: "Blog", description, path: "/blog" });
 
   // Search result pages are thin duplicates of /blog: keep them out of the index.
   return search ? { ...metadata, robots: { index: false, follow: true } } : metadata;

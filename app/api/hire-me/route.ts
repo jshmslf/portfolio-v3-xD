@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import { profile } from "@/lib/profile";
 import { hireMeNotificationEmail, hireMeConfirmationEmail } from "@/lib/email-templates";
 import { getRequestIpHash } from "@/lib/likes";
 import { canSendHireMeEmail } from "@/lib/hire-me-rate-limit";
-import { getLeadReplySettings } from "@/lib/lead-reply-settings";
+import { getLeadNotifyEmail, getLeadReplySettings } from "@/lib/lead-reply-settings";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export async function POST(request: Request) {
@@ -32,10 +31,11 @@ export async function POST(request: Request) {
   const resend = new Resend(process.env.RESEND_API_KEY);
   const from = process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
   const notification = hireMeNotificationEmail({ name, email, message });
+  const notifyEmail = await getLeadNotifyEmail();
 
   const { error } = await resend.emails.send({
     from,
-    to: profile.email,
+    to: notifyEmail,
     replyTo: email,
     subject: notification.subject,
     html: notification.html,

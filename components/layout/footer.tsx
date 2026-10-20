@@ -1,7 +1,8 @@
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { Container } from "@/components/ui/container";
 
-export function Footer() {
+export async function Footer() {
+  const profile = await getSiteProfile();
   const year = new Date().getFullYear();
 
   return (

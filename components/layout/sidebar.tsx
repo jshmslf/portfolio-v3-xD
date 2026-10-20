@@ -8,26 +8,39 @@ import {
   faBriefcase,
   faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
-import { profile } from "@/lib/profile";
-import { experience } from "@/lib/experience";
+import type { ExperienceItem } from "@/lib/experience";
 import { getSocialIcon } from "@/lib/icons";
 import { MapPlaceholder } from "@/components/layout/map-placeholder";
 import { HireMeButton } from "@/components/layout/hire-me-button";
 import { StatusDot } from "@/components/ui/status-dot";
+import { Reveal } from "@/components/ui/reveal";
+import { HERO_STAGE_ID } from "@/components/sections/hero-stage";
 import type { SocialLink } from "@/lib/social-links";
 
+// Fallback for pages without the intro hero.
 const SCROLL_REVEAL_THRESHOLD = 400;
+
+// The compact card stands in for the hero's profile once the hero is gone.
+function isPastHero() {
+  const hero = document.getElementById(HERO_STAGE_ID);
+  return hero ? hero.getBoundingClientRect().bottom <= 0 : window.scrollY > SCROLL_REVEAL_THRESHOLD;
+}
 
 export function Sidebar({
   socialLinks = [],
   projectCount = 0,
   avatarUrl,
+  name,
+  address,
+  currentRole,
 }: {
   socialLinks?: SocialLink[];
   projectCount?: number;
   avatarUrl: string;
+  name: string;
+  address: string;
+  currentRole?: ExperienceItem;
 }) {
-  const currentRole = experience[0];
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -37,7 +50,7 @@ export function Sidebar({
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        setScrolled(window.scrollY > SCROLL_REVEAL_THRESHOLD);
+        setScrolled(isPastHero());
         ticking = false;
       });
     }
@@ -48,7 +61,7 @@ export function Sidebar({
 
   return (
     <aside className="lg:sticky lg:top-6 lg:self-start" aria-label="Profile summary">
-      <div className="flex flex-col gap-4">
+      <Reveal className="flex flex-col gap-4">
         <div
           className={`hidden items-center gap-3 overflow-hidden lg:flex border border-border bg-surface transition-all duration-300 ${
             scrolled ? "max-h-20 p-3 opacity-100" : "max-h-0 p-0 opacity-0 border-none"
@@ -65,7 +78,7 @@ export function Sidebar({
             style={{ borderRadius: "var(--radius)" }}
           />
           <div className="min-w-0">
-            <p className="truncate font-medium">{profile.name}</p>
+            <p className="truncate font-medium">{name}</p>
             <p className="flex items-center gap-1.5 text-xs text-muted">
               <StatusDot />
               Open to work
@@ -77,17 +90,19 @@ export function Sidebar({
           className="border border-border bg-surface p-6"
           style={{ borderRadius: "var(--radius)" }}
         >
-          <div className="flex items-start gap-3">
-            <FontAwesomeIcon icon={faBriefcase} className="mt-1 text-accent" />
-            <div>
-              <p className="font-medium">{currentRole.role}</p>
-              <p className="text-sm text-muted">
-                {currentRole.org}
-              </p>
+          {currentRole && (
+            <div className="mb-4 flex items-start gap-3">
+              <FontAwesomeIcon icon={faBriefcase} className="mt-1 text-accent" />
+              <div>
+                <p className="font-medium">{currentRole.role}</p>
+                <p className="text-sm text-muted">
+                  {currentRole.org}
+                </p>
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <FontAwesomeIcon icon={faFolder} className="text-accent" />
             <p className="text-sm text-muted">
               {projectCount} projects
@@ -119,7 +134,7 @@ export function Sidebar({
           </p>
           <div className="mt-3 flex items-center gap-2">
             <FontAwesomeIcon icon={faLocationDot} className="text-accent" />
-            <p className="text-xs font-medium">{profile.address}</p>
+            <p className="text-xs font-medium">{address}</p>
           </div>
           <div className="mt-2">
             <MapPlaceholder />
@@ -136,7 +151,7 @@ export function Sidebar({
           </p>
           <HireMeButton className="mt-4 w-full px-4 py-2 text-sm" />
         </div>
-      </div>
+      </Reveal>
     </aside>
   );
 }

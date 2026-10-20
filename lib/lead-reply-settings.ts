@@ -23,3 +23,22 @@ export async function getLeadReplySettings() {
     signoffHtml: data.signoff_html,
   };
 }
+
+export const DEFAULT_NOTIFY_EMAIL = "jshmslf@gmail.com";
+
+/**
+ * Where new hire-me leads are sent. Queried separately from
+ * `getLeadReplySettings` so a missing `notify_email` column only affects this
+ * lookup (and falls back to the default).
+ */
+export async function getLeadNotifyEmail(): Promise<string> {
+  const { data, error } = await supabaseAdmin
+    .from("lead_reply_settings")
+    .select("notify_email")
+    .eq("id", 1)
+    .maybeSingle();
+
+  const notifyEmail = typeof data?.notify_email === "string" ? data.notify_email.trim() : "";
+  if (error || !notifyEmail) return DEFAULT_NOTIFY_EMAIL;
+  return notifyEmail;
+}

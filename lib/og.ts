@@ -1,4 +1,4 @@
-import { getProfileAvatarUrl } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 
 /**
  * Avatar URL usable inside `ImageResponse`. Satori can't decode WebP (the
@@ -6,7 +6,7 @@ import { getProfileAvatarUrl } from "@/lib/profile";
  * square PNG at the requested size. Other hosts are passed through as-is.
  */
 export async function getOgAvatarUrl(size: number): Promise<string> {
-  const url = await getProfileAvatarUrl();
+  const { avatarUrl: url } = await getSiteProfile();
   if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
   return url.replace("/upload/", `/upload/c_fill,g_face,w_${size},h_${size},f_png/`);
 }

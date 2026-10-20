@@ -13,10 +13,10 @@ import {
   computeReadingMinutes,
   excerptFromContent,
 } from "@/lib/blog";
-import { profile } from "@/lib/profile";
+import { getSiteProfile } from "@/lib/site-profile";
 import { siteConfig } from "@/lib/site-config";
 import { formatPostDate } from "@/lib/format";
-import { baseOpenGraph } from "@/lib/seo/site";
+import { getBaseOpenGraph } from "@/lib/seo/site";
 import { getBlogPostingSchema } from "@/lib/seo/schema";
 import { getRequestIpHash, hasLiked } from "@/lib/likes";
 
@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || excerptFromContent(post.content) || undefined;
   const path = `/blog/${post.slug}`;
+  const [profile, baseOpenGraph] = await Promise.all([getSiteProfile(), getBaseOpenGraph()]);
 
   return {
     title: post.seoTitle ? { absolute: post.seoTitle } : post.title,
@@ -64,9 +65,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const post = await getBlogPostBySlug(slug);
   if (!post) notFound();
 
-  const [allPosts, ipHash] = await Promise.all([
+  const [allPosts, ipHash, profile, postingSchema] = await Promise.all([
     getPublishedBlogPosts(),
     getRequestIpHash(),
+    getSiteProfile(),
+    getBlogPostingSchema(post),
   ]);
   const otherPosts = allPosts.filter((p) => p.id !== post.id).slice(0, 5);
   const liked = await hasLiked(post.id, ipHash);
@@ -76,7 +79,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   return (
     <main className="flex-1 pt-20 pb-24">
-      <JsonLd data={getBlogPostingSchema(post)} />
+      <JsonLd data={postingSchema} />
       <ReadingProgress />
       <Container>
         <Breadcrumbs

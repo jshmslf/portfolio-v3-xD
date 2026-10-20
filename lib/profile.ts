@@ -1,23 +1,11 @@
 import { cache } from "react";
-import { supabase } from "@/lib/supabase/server";
+import { DEFAULT_AVATAR_URL, getSiteProfile } from "@/lib/site-profile";
 
-export const DEFAULT_AVATAR_URL =
-  "https://res.cloudinary.com/dtdvmhtzh/image/upload/v1785783476/v3pfp_kfikxq.webp";
-
-export const profile = {
-  name: "Joshua Verceles",
-  address: "Bayambang, Pangasinan, PH",
-  email: "jshmslf@gmail.com",
-} as const;
-
-export type Profile = typeof profile;
+// Profile data now lives in `lib/site-profile.ts` (CMS-managed, with
+// hard-coded fallbacks in `DEFAULT_SITE_PROFILE`). Kept for existing imports.
+export { DEFAULT_AVATAR_URL };
 
 export const getProfileAvatarUrl = cache(async (): Promise<string> => {
-  const { data } = await supabase
-    .from("profile")
-    .select("avatar_url")
-    .eq("id", 1)
-    .single();
-
-  return data?.avatar_url ?? DEFAULT_AVATAR_URL;
+  const { avatarUrl } = await getSiteProfile();
+  return avatarUrl;
 });
