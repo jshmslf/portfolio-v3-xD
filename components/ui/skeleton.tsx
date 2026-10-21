@@ -46,7 +46,6 @@ export function PageHeaderSkeleton({ withDescription = true }: { withDescription
 export function SectionHeaderSkeleton() {
   return (
     <div className="flex items-center gap-3">
-      <span aria-hidden="true" className="h-px w-6 bg-accent/60" />
       <Skeleton className="h-3.5 w-28" />
     </div>
   );

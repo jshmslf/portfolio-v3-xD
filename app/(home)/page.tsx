@@ -1,5 +1,6 @@
 import { About } from "@/components/sections/about";
 import { Blog } from "@/components/sections/blog";
+import { Companies } from "@/components/sections/companies";
 import { Contact } from "@/components/sections/contact";
 import { DodgersCard } from "@/components/sections/dodgers-card";
 import { Experience } from "@/components/sections/experience";
@@ -12,6 +13,7 @@ import { TechStack } from "@/components/sections/tech-stack";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/ui/reveal";
+import { getCompanies } from "@/lib/companies";
 import { getSocialLinks } from "@/lib/social-links";
 import { getProjects } from "@/lib/projects";
 import { getSiteProfile } from "@/lib/site-profile";
@@ -29,11 +31,12 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const [socialLinks, projects, profile, experience] = await Promise.all([
+  const [socialLinks, projects, profile, experience, companies] = await Promise.all([
     getSocialLinks(),
     getProjects(),
     getSiteProfile(),
     getExperience(),
+    getCompanies(),
   ]);
 
   return (
@@ -54,6 +57,12 @@ export default async function Home() {
               currentRole={experience[0]}
             />
             <div className="flex min-w-0 flex-col gap-20">
+              {/* Hidden until the CMS has at least one visible company. */}
+              {companies.length > 0 && (
+                <Reveal>
+                  <Companies companies={companies} />
+                </Reveal>
+              )}
               <Reveal>
                 <About />
               </Reveal>

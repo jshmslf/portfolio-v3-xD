@@ -92,7 +92,7 @@ export function ContactForm({ layout = "stacked" }: { layout?: "stacked" | "spli
           name="message"
           rows={5}
           placeholder="Tell me about your project, timeline, or role..."
-          className={`${INPUT_CLASS} resize-y`}
+          className={`${INPUT_CLASS} max-h-64 min-h-32 resize-y`}
           style={{ borderRadius: "var(--radius)" }}
         />
       </label>

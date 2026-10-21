@@ -60,7 +60,9 @@ export function Sidebar({
   }, []);
 
   return (
-    <aside className="lg:sticky lg:top-6 lg:self-start" aria-label="Profile summary">
+    // Desktop only: below lg the page is one column, and visitors should reach
+    // the content right after the hero. Socials and contact live in Contact.
+    <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start" aria-label="Profile summary">
       <Reveal className="flex flex-col gap-4">
         <div
           className={`hidden items-center gap-3 overflow-hidden lg:flex border border-border bg-surface transition-all duration-300 ${

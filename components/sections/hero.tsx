@@ -41,15 +41,19 @@ export async function Hero() {
             priority
           />
           <div className="flex flex-col items-center sm:items-start">
+            {/* Always one line: on very narrow screens the address truncates
+                instead of wrapping. */}
             <p
-              className="motion-enter inline-flex items-center gap-2 border border-border bg-surface/80 px-3 py-1 text-xs font-medium text-muted backdrop-blur"
+              className="motion-enter inline-flex max-w-full items-center gap-1.5 whitespace-nowrap border border-border bg-surface/80 px-2.5 py-1 text-[11px] font-medium text-muted backdrop-blur sm:gap-2 sm:px-3 sm:text-xs"
               style={{ borderRadius: "var(--radius)", ...enterDelay(120) }}
             >
               <StatusDot />
-              Open to work
-              <span aria-hidden="true" className="text-border">|</span>
-              <FontAwesomeIcon icon={faLocationDot} className="text-accent" />
-              {profile.address}
+              <span className="shrink-0">Open to work</span>
+              <span aria-hidden="true" className="shrink-0 text-border">|</span>
+              <FontAwesomeIcon icon={faLocationDot} className="shrink-0 text-accent" />
+              <span className="min-w-0 truncate" title={profile.address}>
+                {profile.address}
+              </span>
             </p>
             <h1
               className="motion-enter mt-5 text-4xl font-semibold tracking-tight sm:text-6xl"

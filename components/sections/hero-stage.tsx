@@ -1,6 +1,8 @@
 "use client";
 
 import { useLayoutEffect, useRef } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 export const HERO_STAGE_ID = "intro";
 
@@ -12,6 +14,8 @@ const NARROW_BREAKPOINT = 640;
 
 // The scroll indicator only shows while the visitor is still at the top.
 const AT_TOP_THRESHOLD = 8;
+// Minimum space between the bottom of the hero content and the indicator.
+const INDICATOR_GAP = 16;
 
 /**
  * Full-viewport intro: the profile starts zoomed in and centred, then scales
@@ -63,8 +67,22 @@ export function HeroStage({
 
       collapse = Math.max(0, stageHeight - panelHeight);
       shift = collapse / 2;
+
+      // At the top the content is centred in the stage, so its visible bottom
+      // (ignoring the empty bottom padding) is stageHeight/2 + scale * reach.
+      // Cap the zoom so that bottom stays clear of the scroll indicator.
+      const inner = content!.firstElementChild as HTMLElement | null;
+      const paddingBottom = inner ? parseFloat(getComputedStyle(inner).paddingBottom) || 0 : 0;
+      const reach = panelHeight / 2 - paddingBottom;
+      const room = indicator!.offsetTop - INDICATOR_GAP - stageHeight / 2;
+      const fitScale = reach > 0 ? room / reach : maxScale;
+
       // Never zoom past the viewport, so the content below can't overlap it.
-      scale = Math.max(1, Math.min(maxScale, stageHeight / panelHeight));
+      scale = Math.max(1, Math.min(maxScale, stageHeight / panelHeight, fitScale));
+      // Too short to fit even unzoomed (landscape phones): hide the indicator
+      // rather than draw it over the buttons. Hidden with visibility, not
+      // display, so offsetTop stays measurable when the screen grows again.
+      indicator!.toggleAttribute("data-cramped", scale * reach > room);
 
       stage!.style.setProperty("--hero-collapse", `${Math.max(collapse, 1)}px`);
       stage!.style.setProperty("--hero-shift", `${shift}px`);
@@ -131,18 +149,10 @@ export function HeroStage({
             ref={indicatorRef}
             type="button"
             onClick={scrollToContent}
-            className="pointer-events-auto absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-muted transition-[opacity,translate,visibility,color] duration-300 hover:text-accent-text data-[gone]:invisible data-[gone]:translate-y-3 data-[gone]:opacity-0"
+            className="pointer-events-auto absolute bottom-4 left-1/2 flex h-11 w-11 -translate-x-1/2 items-center justify-center text-muted transition-[opacity,translate,visibility,color] duration-300 hover:text-accent-text data-[cramped]:invisible data-[gone]:invisible data-[gone]:translate-y-3 data-[gone]:opacity-0 sm:bottom-6"
           >
-            <span
-              aria-hidden="true"
-              className="flex h-9 w-6 justify-center rounded-full border-2 border-current pt-1.5"
-            >
-              <span className="scroll-indicator-dot h-1.5 w-1 rounded-full bg-accent" />
-            </span>
-            <span className="text-[0.625rem] font-medium uppercase tracking-[0.2em]">
-              Scroll
-            </span>
-            <span className="sr-only">to see more about me</span>
+            <FontAwesomeIcon icon={faArrowDown} aria-hidden="true" className="scroll-indicator-arrow text-lg" />
+            <span className="sr-only">Scroll to see more about me</span>
           </button>
         </div>
       </div>

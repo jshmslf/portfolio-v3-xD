@@ -76,7 +76,7 @@ export function ThemeController({ versions = [] }: { versions?: PortfolioVersion
   }, [open]);
 
   return (
-    <div ref={panelRef} className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+    <div ref={panelRef} className="fixed bottom-4 right-4 z-50 flex flex-col items-end sm:bottom-5 sm:right-5">
       {open && (
         <div
           className="mb-3 w-64 border border-border bg-surface p-4 shadow-lg"
@@ -179,7 +179,7 @@ export function ThemeController({ versions = [] }: { versions?: PortfolioVersion
         onClick={() => setOpen((v) => !v)}
         aria-label="Theme settings"
         aria-expanded={open}
-        className="flex h-12 w-12 items-center justify-center border border-border bg-surface text-foreground shadow-lg transition-transform hover:scale-105"
+        className="flex h-10 w-10 items-center justify-center border border-border bg-surface text-foreground shadow-lg transition-transform hover:scale-105 sm:h-12 sm:w-12"
         style={{ borderRadius: "var(--radius)" }}
       >
         <FontAwesomeIcon icon={faSliders} />

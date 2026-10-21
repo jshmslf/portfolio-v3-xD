@@ -41,9 +41,8 @@ export default async function TechStackPage() {
               <section key={category.id} aria-labelledby={`category-${category.id}`}>
                 <h2
                   id={`category-${category.id}`}
-                  className="flex items-center gap-3 text-sm font-semibold uppercase tracking-widest text-accent-text"
+                  className="text-sm font-semibold uppercase tracking-widest text-accent-text"
                 >
-                  <span aria-hidden="true" className="h-px w-6 bg-accent" />
                   {category.label}
                 </h2>
                 <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
