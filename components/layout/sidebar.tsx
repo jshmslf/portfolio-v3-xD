@@ -12,6 +12,7 @@ import type { ExperienceItem } from "@/lib/experience";
 import { getSocialIcon } from "@/lib/icons";
 import { MapPlaceholder } from "@/components/layout/map-placeholder";
 import { HireMeButton } from "@/components/layout/hire-me-button";
+import { SiteCredits } from "@/components/layout/site-credits";
 import { StatusDot } from "@/components/ui/status-dot";
 import { Reveal } from "@/components/ui/reveal";
 import { HERO_STAGE_ID } from "@/components/sections/hero-stage";
@@ -33,6 +34,7 @@ export function Sidebar({
   name,
   address,
   currentRole,
+  visitorTotal = null,
 }: {
   socialLinks?: SocialLink[];
   projectCount?: number;
@@ -40,6 +42,7 @@ export function Sidebar({
   name: string;
   address: string;
   currentRole?: ExperienceItem;
+  visitorTotal?: number | null;
 }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -153,6 +156,9 @@ export function Sidebar({
           </p>
           <HireMeButton className="mt-4 w-full px-4 py-2 text-sm" />
         </div>
+
+        {/* Stands in for the site footer from lg up (see FooterVisibility). */}
+        <SiteCredits name={name} visitorTotal={visitorTotal} className="px-1" />
       </Reveal>
     </aside>
   );

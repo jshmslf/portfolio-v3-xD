@@ -21,6 +21,7 @@ import { getProjects } from "@/lib/projects";
 import { getSiteProfile } from "@/lib/site-profile";
 import { getExperience } from "@/lib/experience";
 import { getHomepageCard } from "@/lib/taps";
+import { getVisitorTotal } from "@/lib/visitors";
 import { pageMetadata } from "@/lib/seo/site";
 
 export const revalidate = 60;
@@ -34,13 +35,14 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const [socialLinks, projects, profile, experience, companies, homepageCard] = await Promise.all([
+  const [socialLinks, projects, profile, experience, companies, homepageCard, visitorTotal] = await Promise.all([
     getSocialLinks(),
     getProjects(),
     getSiteProfile(),
     getExperience(),
     getCompanies(),
     getHomepageCard(),
+    getVisitorTotal(),
   ]);
 
   return (
@@ -59,6 +61,7 @@ export default async function Home() {
               name={profile.name}
               address={profile.address}
               currentRole={experience[0]}
+              visitorTotal={visitorTotal}
             />
             <div className="flex min-w-0 flex-col gap-20">
               {/* Hidden until the CMS has at least one visible company. */}
