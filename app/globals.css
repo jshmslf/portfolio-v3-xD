@@ -66,6 +66,15 @@ body {
   overflow-wrap: break-word;
 }
 
+/* From lg up the sidebar carries the visitor count and copyright, so the site
+   footer would only repeat them. Below lg the sidebar is hidden and the footer
+   takes over. */
+@media (width >= 64rem) {
+  body:has([data-sidebar-credits]) [data-site-footer] {
+    display: none;
+  }
+}
+
 h1,
 h2,
 h3 {

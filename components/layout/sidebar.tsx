@@ -65,7 +65,11 @@ export function Sidebar({
   return (
     // Desktop only: below lg the page is one column, and visitors should reach
     // the content right after the hero. Socials and contact live in Contact.
-    <aside className="hidden lg:sticky lg:top-6 lg:block lg:self-start" aria-label="Profile summary">
+    <aside
+      className="hidden lg:sticky lg:top-6 lg:block lg:self-start"
+      aria-label="Profile summary"
+      data-sidebar-credits
+    >
       <Reveal className="flex flex-col gap-4">
         <div
           className={`hidden items-center gap-3 overflow-hidden lg:flex border border-border bg-surface transition-all duration-300 ${
@@ -157,7 +161,7 @@ export function Sidebar({
           <HireMeButton className="mt-4 w-full px-4 py-2 text-sm" />
         </div>
 
-        {/* Stands in for the site footer from lg up (see FooterVisibility). */}
+        {/* Stands in for the site footer from lg up (see [data-site-footer] in globals.css). */}
         <SiteCredits name={name} visitorTotal={visitorTotal} className="px-1" />
       </Reveal>
     </aside>
