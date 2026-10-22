@@ -6,6 +6,7 @@ import { DodgersCard } from "@/components/sections/dodgers-card";
 import { Experience } from "@/components/sections/experience";
 import { GithubActivity } from "@/components/sections/github-activity";
 import { Hero } from "@/components/sections/hero";
+import { HowIWork } from "@/components/sections/how-i-work";
 import { IntroSplash } from "@/components/sections/intro-splash";
 import { Projects } from "@/components/sections/projects";
 import { Testimonials } from "@/components/sections/testimonials";
@@ -65,6 +66,9 @@ export default async function Home() {
               )}
               <Reveal>
                 <About />
+              </Reveal>
+              <Reveal>
+                <HowIWork />
               </Reveal>
               <Reveal>
                 <TechStack />
