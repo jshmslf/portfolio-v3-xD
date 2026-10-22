@@ -509,3 +509,67 @@ html[data-intro="leaving"] .intro-splash .intro-loader {
     animation: none;
   }
 }
+
+/* ---------- Tap counter ---------- */
+
+/* A chunky 8-bit key: the darker rim below is its side, and pressing sinks
+   it onto the rim. [data-pressed] covers touch, where :active is unreliable
+   on iOS. */
+.arcade-button {
+  --rim: color-mix(in oklab, var(--accent) 55%, black);
+  border: 2px solid var(--rim);
+  border-radius: min(var(--radius), 4px);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  text-shadow: 2px 2px 0 var(--rim);
+  box-shadow: 0 4px 0 var(--rim);
+  transition: transform 50ms ease-out, box-shadow 50ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.arcade-button:active,
+.arcade-button[data-pressed] {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 var(--rim);
+}
+
+/* The hard offset shadow gives the count a printed, arcade-scoreboard feel. */
+.tap-score {
+  text-shadow: 3px 3px 0 color-mix(in oklab, var(--accent) 40%, transparent);
+}
+
+.tap-pop {
+  animation: tap-pop 700ms ease-out forwards;
+}
+
+@keyframes tap-pop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(var(--pop-rotate)) scale(0.6);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(var(--pop-rotate)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 28px)) rotate(var(--pop-rotate)) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcade-button {
+    transition: none;
+  }
+
+  .tap-pop {
+    animation-name: fade-out;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}

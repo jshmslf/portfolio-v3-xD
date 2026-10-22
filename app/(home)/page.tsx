@@ -9,6 +9,7 @@ import { Hero } from "@/components/sections/hero";
 import { HowIWork } from "@/components/sections/how-i-work";
 import { IntroSplash } from "@/components/sections/intro-splash";
 import { Projects } from "@/components/sections/projects";
+import { TapCard } from "@/components/sections/tap-card";
 import { Testimonials } from "@/components/sections/testimonials";
 import { TechStack } from "@/components/sections/tech-stack";
 import { Sidebar } from "@/components/layout/sidebar";
@@ -19,6 +20,7 @@ import { getSocialLinks } from "@/lib/social-links";
 import { getProjects } from "@/lib/projects";
 import { getSiteProfile } from "@/lib/site-profile";
 import { getExperience } from "@/lib/experience";
+import { getHomepageCard } from "@/lib/taps";
 import { pageMetadata } from "@/lib/seo/site";
 
 export const revalidate = 60;
@@ -32,12 +34,13 @@ export async function generateMetadata() {
 }
 
 export default async function Home() {
-  const [socialLinks, projects, profile, experience, companies] = await Promise.all([
+  const [socialLinks, projects, profile, experience, companies, homepageCard] = await Promise.all([
     getSocialLinks(),
     getProjects(),
     getSiteProfile(),
     getExperience(),
     getCompanies(),
+    getHomepageCard(),
   ]);
 
   return (
@@ -86,8 +89,9 @@ export default async function Home() {
                 <Reveal>
                   <Testimonials />
                 </Reveal>
+                {/* Chosen in the CMS (Website → Homepage card). */}
                 <Reveal delay={120}>
-                  <DodgersCard />
+                  {homepageCard === "dodgers" ? <DodgersCard /> : <TapCard />}
                 </Reveal>
               </div>
               <Reveal>
